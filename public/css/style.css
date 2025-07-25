@@ -1,81 +1,214 @@
+/* =================================
+  GENERAL & BODY STYLES
+================================= */
 body {
-    font-family: 'Plus Jakarta Sans' !important;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-.navbar{
-    height: 5rem;
-    color: black;
-    background-color: rgb(255, 255, 255);
+
+.container {
+  flex: 1;
 }
-.container{
-    flex: 1;
+
+.listing-link {
+  text-decoration: none;
 }
-.fa-airbnb{
-    color: red;
-    font-size: 2rem;
+
+/* =================================
+  NAVBAR & FILTERS
+================================= */
+.navbar {
+  height: 5rem;
+  background-color: #ffffff;
 }
-.nav-link{
-    color: black !important;
+
+.nav-link {
+  color: #fa2727 !important;
+  font-weight: 500;
+  margin: 0.1rem;
 }
-.f-info-links a{
-    text-decoration: none;
-    color: black;
+.nav-link:hover{
+    color: #ffffff !important;
+    background-color: #fa2727;
+    border-radius: 1rem;
 }
-.f-info-links a:hover{
-    text-decoration: underline;
+
+
+/* =================================
+  LISTINGS INDEX PAGE (CARDS)
+================================= */
+.listing-card {
+  border: none;
+  
+  cursor: pointer;
 }
+
+.img-wrapper {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.wishlist-icon {
+  position: absolute;
+  top: 1rem;  
+  right: 1rem; 
+  color: white;
+  font-size: 1.5rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out; 
+}
+.img-wrapper:hover .wishlist-icon {
+  opacity: 1;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+}
+
+.listing-card:hover .card-img-top {
+  transform: scale(1.05);
+  filter: brightness(0.95);
+}
+
+.card-body {
+  padding: 1rem 0.25rem !important; 
+  color: #222222;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.25rem;
+}
+
+.listing-location {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.listing-title {
+  font-size: 0.95rem;
+  color: #717171;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listing-price {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+/* =================================
+  LISTING SHOW PAGE
+================================= */
+.show-img-container {
+  border-radius: 1rem;
+  overflow: hidden;
+  height: 60vh;
+}
+
+.show-img {
+  width: 67rem;
+  height: 25rem;
+  object-fit: cover;
+}
+
+.booking-widget {
+  border: 1px solid #ddd;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  position: sticky;
+  top: 7rem; 
+}
+
+.booking-widget .booking-night-text {
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+.edit-btn, .delete-btn {
+  width: 5rem;
+  background-color: #ff385c !important;
+  border: none !important;
+  font-weight: 600;
+}
+
+/* =================================
+  REVIEWS & STAR RATINGS
+================================= */
+
+
+.fa-star {
+  color: #ffc107;
+}
+
+.starability-basic {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 0.3rem;
+  justify-content: flex-end;
+}
+
+.starability-basic input {
+  display: none;
+}
+
+.starability-basic label {
+  color: #b0b0b0;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.starability-basic input:checked ~ label,
+.starability-basic input:hover ~ label {
+  color: #ffc107;
+}
+
+.starability-result {
+  color: #ffc107;
+  font-size: 1.2rem;
+}
+
+/* =================================
+  FOOTER
+================================= */
 .f-info-links,
-.f-info-socials,.f-info-brand{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgb(231, 226, 226);
+.f-info-socials,
+.f-info-brand {
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e8d4d4;
 }
-.f-info-socials i{
-    font-size: 1.3rem;
-    margin-right: 1rem;
+
+.f-info-links a {
+  text-decoration: none;
+  color: #222222;
+  margin: 0 0.5rem;
 }
-.card{
-    border: none !important;
-    margin-bottom: 2rem;
+
+.f-info-links a:hover {
+  text-decoration: underline;
 }
-.card-img-top{
-    border-radius: 1rem !important;
-    width: 100% !important;
-    object-fit: cover;
-}   
-.card-body{
-    padding: 0 !important;
+
+.f-info-socials i {
+  font-size: 2rem;
+  margin: 0 0.5rem;
 }
-.listing-link{
-    text-decoration: none ;
-}
-.card-img-overlay{
-    opacity: 0;
-}
-.card-img-overlay:hover{
-    opacity: 0.2;
-    background-color: white;
-}
-.add-btn,.edit-btn{
-    background-color: red !important;
-    border: none !important;
-}
-.show-img{
-    height: 500px !important;
-    width: 100% !important;
-}
-.review{
-    border:solid black;
-    border-radius: 5px;
-    padding: 10px !important;
-}
-.search{
-    border: 4px !important;
-}
-.form-control{
-    width: 300px !important;
+.fa-brands:hover{
+    color: #ff385c;
 }

@@ -17,7 +17,7 @@ router.post("/signup", async (req,res) => {
             if(err){
                 return next(err);
             }
-            req.flash("success","Welcome to Wanderlust!!");
+            req.flash("success","Welcome to Rentify!!");
             res.redirect("/listings");
         });
     } catch (e) {
@@ -31,7 +31,7 @@ router.get("/login",(req,res) =>{
 router.post("/login",saveRedirectUrl,
     passport.authenticate("local",{failureRedirect: "/login",failureFlash: true,}),
     async (req,res) => {
-        req.flash("success","Welcome back to Wanderlust!!");    
+        req.flash("success","Welcome back to Rentify!!");    
         let redirectUrl = res.locals.redirectUrl || "/listings";
         res.redirect(redirectUrl);     
     }

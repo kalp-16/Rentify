@@ -86,7 +86,14 @@ app.use('/listings',listings);
 app.use('/listings/:id/reviews',reviews);
 app.use('/',user);
 
+app.get('/', (req, res) => {
+    res.redirect('/listings'); // Redirects the root URL to /listings
+});
+app.all('/{*any}', (req, res, next) => {
+    next(new ExpressError(404, 'Page Not Found!'));
+});
 
 app.listen(8080, () => {
     console.log("App is listening to port 8080");
 });
+

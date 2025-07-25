@@ -9,13 +9,6 @@ const upload = multer({storage});
 
 const listingContoller = require("../controllers/listings.js");
 
-//index route
-/*router
-  .get("/", listingContoller.index)
-  .post(upload.single("listing[image]"), (req, res) => {
-    res.send(req.file);
-  });*/
-// index route
 router.get("/", listingContoller.index);
 
 router.get('/search', async (req, res, next) => {
@@ -74,17 +67,14 @@ router.get("/:id", async (req, res) => {
         return res.redirect("/listings"); 
     }
 
-    res.render("listings/show.ejs", { listing });
-});
+    let avgRating = 0;
+    if (listing.reviews.length > 0) {
+        let totalRating = listing.reviews.reduce((sum, review) => sum + review.rating, 0);
+        avgRating = (totalRating / listing.reviews.length).toFixed(1);
+    }
 
-//create route
-/*router.post("/",isLoggedIn,async (req,res) => {
-    const newListing = new Listing(req.body.listing);
-    newListing.owner = req.user._id;
-    await newListing.save();
-    req.flash("success","New Listing listed!!");
-    res.redirect("/listings");
-});*/
+    res.render("listings/show.ejs", { listing, avgRating });
+});
 
 //edit route
 router.get("/:id/edit",isLoggedIn,isOwner,async (req,res)=>{

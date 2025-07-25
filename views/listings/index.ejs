@@ -1,23 +1,31 @@
-<% layout("/layouts/boilerplate") %> 
+<% layout("/layouts/boilerplate") %>
+
 <body>
-   <!-- <form method="get" action="/listings/new">
-        <button>Create New Listing</button>
-    </form>-->
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
-    <% for(let listing of allListings) { %>
-        <a href="/listings/<%=listing._id %>" class="listing-link">
-    <div class="card">
-  <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem;">
-  <div class="card-img-overlay">abc</div>
-  <div class="card-body">
-    <p class="card-text">
-        <b><%= listing.title %></b>
-        <br>
-        &#8377;<%= listing.price.toLocaleString("en-IN") %> /night,
-    </p>
-  </div>
-</div>
-</a>
-<%}%>
-</div>
+    <h3 style="color: red;">Discover Your Next Stay with Rentify!!</h3>
+
+    <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-1">
+        <% for(let listing of allListings) { %>
+        <div class="col">
+            <a href="/listings/<%=listing._id %>" class="listing-link">
+                <div class="listing-card">
+                    <div class="img-wrapper">
+                         <% if (listing.image && listing.image.url) { %>
+                            <img src="<%= listing.image.url %>" class="card-img-top" alt="Listing Image">
+                        <% } else { %>
+                            <img src="https://placehold.co/400x300?text=No+Image" class="card-img-top" alt="No image available">
+                        <% } %>
+                        <i class="fa-regular fa-heart wishlist-icon"></i>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-row">
+                            <b class="listing-location"><%= listing.location %>, <%= listing.country %></b>
+                        </div>
+                        <p class="listing-title"><%= listing.title %></p>
+                        <p class="listing-price"><b>&#8377;<%= listing.price.toLocaleString("en-IN") %>/night</b></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <% } %>
+    </div>
 </body>
