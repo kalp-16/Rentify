@@ -9,8 +9,8 @@
             <a href="/listings/<%=listing._id %>" class="listing-link">
                 <div class="listing-card">
                     <div class="img-wrapper">
-                         <% if (listing.image && listing.image.url) { %>
-                            <img src="<%= listing.image.url %>" class="card-img-top" alt="Listing Image">
+                         <% if (listing.image && listing.image.length > 0) { %>
+                            <img src="<%= listing.image[0].url %>" class="card-img-top" alt="Listing Image">
                         <% } else { %>
                             <img src="https://placehold.co/400x300?text=No+Image" class="card-img-top" alt="No image available">
                         <% } %>

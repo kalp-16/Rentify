@@ -80,7 +80,7 @@ body {
 
 .card-body {
   padding: 1rem 0.25rem !important; 
-  color: #222222;
+  color: #222222 !important;
 }
 
 .card-row {
