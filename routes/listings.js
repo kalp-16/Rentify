@@ -12,17 +12,18 @@ const listingContoller = require("../controllers/listings.js");
 
 router.get("/", listingContoller.index);
 
-router.get('/search', async (req, res, next) => {
-    const { q } = req.query; // Get the search query
+router.get('/search', async (req, res) => {
+    const { q } = req.query;
 
     if (!q || q.trim() === '') {
-        req.flash('error', 'Please enter a destination to search.');
-        return res.redirect('/listings');
+        return res.render("listings/search", { 
+            listings: [], 
+            searchQuery: "", 
+            flashMessage: { type: "error", text: "Please enter a destination to search." } 
+        });
     }
 
-    const searchQuery = new RegExp(q.trim(), 'i'); // Case-insensitive regex
-
-    // This part directly uses the fields from your provided Listing schema
+    const searchQuery = new RegExp(q.trim(), 'i');
     const searchResults = await Listing.find({
         $or: [
             { title: { $regex: searchQuery } },
@@ -31,14 +32,20 @@ router.get('/search', async (req, res, next) => {
         ]
     });
 
+    let flashMessage = null;
     if (searchResults.length === 0) {
-        req.flash('info', `No listings found for "${q}".`);
+        flashMessage = { type: "info", text: `No listings found for "${q}".` };
     } else {
-        req.flash('success', `Found ${searchResults.length} listings for "${q}".`);
+        flashMessage = { type: "success", text: `Found ${searchResults.length} listings for "${q}".` };
     }
 
-    res.render('listings/search', { listings: searchResults, searchQuery: q });
+    res.render("listings/search", { 
+        listings: searchResults, 
+        searchQuery: q,
+        flashMessage 
+    });
 });
+
 
 // merged upload + create route
 router.post(

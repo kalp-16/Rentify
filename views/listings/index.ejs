@@ -1,8 +1,108 @@
 <% layout("/layouts/boilerplate") %>
+<!-- Hero / Search Section -->
+    <div class="text-center search ">
+        <h1 id="animatedText" class="typing" >Discover Your Next Stay with Rentify!! </h1>
+        <form action="/listings/search" method="GET" class="d-flex justify-content-center mt-3">
+            <input type="text" name="q" class="form-control w-50 me-2" style="height: 3rem;" placeholder="Search destinations, cities or properties" required>
+            <button type="submit" class="btn btn-dark" style="background-color: red ;">Search</button>
+        </form>
+    </div>
 
-<body>
-    <h3 style="color: red;">Discover Your Next Stay with Rentify!!</h3>
+<div class="container mt-4">
 
+    
+
+    <!-- Metro Cities Section -->
+    <h3 class="mb-3">Top Metro Cities</h3>
+    <div class="row row-cols-1 row-cols-md-4 g-3 mb-5" >
+        <% const metroCities = ["Mumbai","Delhi","Bengaluru","Chennai","Ahmedabad","Kolkata","Hyderabad","Pune"]; %>
+        <% metroCities.forEach(city => { %>
+            <div class="col metroCities">
+                <a href="/listings/search?q=<%= city %>" class="text-decoration-none text-dark">
+                    <div class="card shadow-sm h-100 text-center "  style="border: none;">
+                        <img src="/images/cities/<%= city.toLowerCase() %>.jpeg" class="card-img-top rounded" style="height: 200px; object-fit: cover;" alt="<%= city %>">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= city %></h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <% }) %>
+    </div>
+
+    <!-- Top Vacation Destinations -->
+    <h3 class="mb-3">Top Vacation Destinations</h3>
+    <div class="row row-cols-1 row-cols-md-4 g-3 mb-5">
+        <% const vacations = ["Goa","Alleppey","Manali","Leh","Andaman","Darjeeling","Udaipur","Rishikesh"]; %>
+        <% vacations.forEach(place => { %>
+            <div class="col">
+                <a href="/listings/search?q=<%= place %>" class="text-decoration-none text-dark">
+                    <div class="card shadow-sm h-100 text-center p-3">
+                        <img src="/images/vacations/<%= place.toLowerCase() %>.jpeg" class="card-img-top rounded" style="height: 200px; object-fit: cover;" alt="<%= place %>">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= place %></h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <% }) %>
+    </div>
+
+    <!-- Property Types Section -->
+    <h3 class="mb-3">Browse by Property Type</h3>
+    <% const propertyTypeList = [
+  { name: "Hotel", img: "hotel.jpeg" },
+  { name: "Resort", img: "resort.jpeg" },
+  { name: "Bungalow", img: "bungalow.jpeg" },
+  { name: "Apartment", img: "apartment.jpeg" },
+  { name: "Cabin", img: "cabin.jpeg" },
+  { name: "Glamping", img: "glamping.jpeg" },
+  { name: "Hostel", img: "hostel.jpeg" },
+  { name: "Ryokan", img: "ryokan.jpeg" },
+  { name: "Farmhouse", img: "farmhouse.jpeg" },
+  { name: "Houseboat", img: "houseboat.jpeg" },
+  { name: "Villa", img: "villa.jpeg" }
+]; %>
+
+<div id="propertyCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <% propertyTypeList.forEach((type, index) => { %>
+      <% if (index % 4 === 0) { %>
+        <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+          <div class="row justify-content-center">
+      <% } %>
+
+            <div class="col-md-3">
+              <a href="/listings/search?q=<%= type.name %>" class="text-decoration-none text-dark">
+                <div class="card shadow-sm h-100 text-center p-3">
+                  <img src="/images/properties/<%= type.img %>" class="card-img-top rounded" 
+                       style="height: 150px; object-fit: cover;" alt="<%= type.name %>">
+                  <div class="card-body">
+                    <h5 class="card-title"><%= type.name %></h5>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+      <% if ((index + 1) % 4 === 0 || index === propertyTypeList.length - 1) { %>
+          </div>
+        </div>
+      <% } %>
+    <% }) %>
+  </div>
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+
+    <!-- All Listings Section -->
     <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-1">
         <% for(let listing of allListings) { %>
         <div class="col">
@@ -28,4 +128,54 @@
         </div>
         <% } %>
     </div>
-</body>
+</div>
+
+<script>
+    const phrases = [
+    "Discover Your Next Stay with Rentify!! ",
+    "Find Your Perfect Getaway ",
+    "Travel. Stay. Relax. "
+  ];
+
+  let i = 0;       // phrase index
+  let j = 0;       // character index
+  let currentPhrase = [];
+  let isDeleting = false;
+  let isEnd = false;
+
+  function loop() {
+    isEnd = false;
+    document.getElementById("animatedText").innerHTML = currentPhrase.join("");
+
+    if (i < phrases.length) {
+      if (!isDeleting && j <= phrases[i].length) {
+        currentPhrase.push(phrases[i][j]);
+        j++;
+      }
+
+      if (isDeleting && j <= phrases[i].length) {
+        currentPhrase.pop();
+        j--;
+      }
+
+      if (j == phrases[i].length) {
+        isEnd = true;
+        isDeleting = true;
+      }
+
+      if (isDeleting && j === 0) {
+        currentPhrase = [];
+        isDeleting = false;
+        i++;
+        if (i === phrases.length) {
+          i = 0; // loop back
+        }
+      }
+    }
+
+    const typingSpeed = isEnd ? 2000 : isDeleting ? 50 : 100;
+    setTimeout(loop, typingSpeed);
+  }
+
+  loop();
+</script>
