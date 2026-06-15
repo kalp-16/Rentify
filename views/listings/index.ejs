@@ -118,7 +118,7 @@
                     </div>
                     <div class="card-body">
                         <div class="card-row">
-                            <b class="listing-location"><%= listing.location %>, <%= listing.country %></b>
+                            <b class="listing-location"><%= [listing.location, listing.city || 'Unknown City', listing.state || 'Unknown State'].filter(Boolean).join(', ') %></b>
                         </div>
                         <p class="listing-title"><%= listing.title %></p>
                         <p class="listing-price"><b>&#8377;<%= listing.price.toLocaleString("en-IN") %>/night</b></p>

@@ -3,7 +3,7 @@ const Review = require("./reviews");
 const Schema = mongoose.Schema;
 
 // Custom validator to block "null", "undefined", and empty string
-const notNullString = {
+const requiredString = {
   type: String,
   required: [true, "This field is required."],
   trim: true,
@@ -16,10 +16,25 @@ const notNullString = {
 };
 
 const listingSchema = new Schema({
-  title: notNullString,
-  description: notNullString,
-  location: notNullString,
-  country: notNullString,
+  title: requiredString,
+  description: requiredString,
+  location: {
+    type: String,
+    trim: true,
+    validate: {
+      validator: function (v) {
+        return v == null || (typeof v === "string" && v.trim().toLowerCase() !== "null" && v.trim().toLowerCase() !== "undefined");
+      },
+      message: "Invalid value. Cannot be 'null' or 'undefined'.",
+    },
+  },
+  state: requiredString,
+  city: requiredString,
+
+  coordinates: {
+    type: [Number],
+    default: [],
+  },
 
   image: [
     {

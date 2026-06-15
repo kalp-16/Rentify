@@ -7,6 +7,16 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    username: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: 1,
+        validate: {
+            validator: (value) => value !== "null" && value !== "undefined",
+            message: "Username cannot be null.",
+        },
+    },
 });
 
 userSchema.plugin(passportLocalMongoose);

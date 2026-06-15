@@ -1,102 +1,193 @@
-
 <% layout("/layouts/boilerplate") %>
-<div class="row">
-    <div class="col-8 offset-2">
-        <h3>Edit your Listing</h3>
-        <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
-            
-            <div class="mb-3">
-                <label for="title" class="form-label">Title</label>
-                <input name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required>
-                <div class="invalid-feedback">Please enter a valid Title</div>
-            </div>
+<style>
+    .hosting-wrap {
+        max-width: 980px;
+        margin: 1.25rem auto 5rem;
+    }
+    .hosting-head {
+        border-bottom: 1px solid #ececec;
+        padding-bottom: 1rem;
+        margin-bottom: 1.25rem;
+    }
+    .hosting-head h2 {
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        margin-bottom: 0.35rem;
+    }
+    .hosting-head p {
+        margin: 0;
+        color: #6a6a6a;
+    }
+    .hosting-card {
+        border: 1px solid #e8e8e8;
+        border-radius: 18px;
+        background: #fff;
+        padding: 1.1rem 1.1rem 0.7rem;
+        margin-bottom: 1rem;
+    }
+    .hosting-card h5 {
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+    }
+    .hosting-sub {
+        color: #707070;
+        font-size: 0.92rem;
+        margin-bottom: 0.9rem;
+    }
+    .facility-chip {
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 0.45rem 0.65rem;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        height: 100%;
+    }
+    .photo-tile {
+        border: 1px solid #e5e5e5;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #fff;
+    }
+    .photo-tile img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        display: block;
+    }
+    .photo-tile .form-check {
+        padding: 0.6rem 0.8rem;
+    }
+    .sticky-actions {
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+        border-top: 1px solid #ececec;
+        padding: 0.95rem 0;
+        margin-top: 1.2rem;
+        z-index: 20;
+    }
+    .sticky-actions-inner {
+        max-width: 980px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
 
+<div class="hosting-wrap">
+    <div class="hosting-head">
+        <h2>Edit Listing</h2>
+        <p>Update photos, details, and amenities to keep your listing fresh and bookable.</p>
+    </div>
+
+    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+        <div class="hosting-card">
+            <h5>About Your Place</h5>
+            <p class="hosting-sub">Improve your title and description for better guest clarity.</p>
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="title" class="form-label">Title</label>
+                    <input id="title" name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required>
+                    <div class="invalid-feedback">Please enter a valid title.</div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="propertyType" class="form-label">Property Type</label>
+                    <select id="propertyType" name="listing[propertyType]" class="form-select" required>
+                        <% const propertyTypes = ["Hotel","Resort","Bungalow", "Apartment","Cabin","Cottage","Glamping","Hostel","Ryokan","Farmhouse","Boat","Tent", "Villa", "Other"]; %>
+                        <% for(let type of propertyTypes) { %>
+                            <option value="<%= type %>" <%= listing.propertyType === type ? 'selected' : '' %>><%= type %></option>
+                        <% } %>
+                    </select>
+                    <div class="invalid-feedback">Please select a valid property type.</div>
+                </div>
+            </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
-                <textarea name="listing[description]" class="form-control" required><%= listing.description %></textarea>
-                <div class="invalid-feedback">Please enter a valid Description</div>
+                <textarea id="description" name="listing[description]" class="form-control" rows="4" required><%= listing.description %></textarea>
+                <div class="invalid-feedback">Please enter a valid description.</div>
             </div>
-            
-            <!--<div class="mb-3">
-                <p>Current Images:</p>
-                <div class="row">
+        </div>
+
+        <div class="hosting-card">
+            <h5>Photos</h5>
+            <p class="hosting-sub">You can delete existing images and upload fresh photos anytime.</p>
+            <div class="mb-3">
+                <p class="mb-2 fw-semibold">Current Images</p>
+                <div class="row g-3">
                     <% listing.image.forEach(img => { %>
-                        <div class="col-3">
-                           <img src="<%= img.url %>" class="img-thumbnail" alt="listing image">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="photo-tile">
+                                <img src="<%= img.url %>" alt="listing image">
+                                <div class="form-check mt-1">
+                                    <input class="form-check-input delete-image-checkbox" type="checkbox" name="deleteImages[]" value="<%= img.filename %>" id="delete-<%= img.filename %>">
+                                    <label class="form-check-label small text-danger" for="delete-<%= img.filename %>">Delete image</label>
+                                </div>
+                            </div>
                         </div>
                     <% }) %>
                 </div>
-            </div>-->
-            <div class="mb-3">
-    <p>Current Images:</p>
-    <div class="row">
-        <% listing.image.forEach(img => { %>
-            <div class="col-3 text-center mb-3">
-                <img src="<%= img.url %>" class="img-thumbnail" alt="listing image">
-                <div class="form-check mt-2">
-                    <input class="form-check-input" type="checkbox" 
-                           name="deleteImages[]" 
-                           value="<%= img.filename %>" 
-                           id="delete-<%= img.filename %>">
-                    <label class="form-check-label small text-danger" for="delete-<%= img.filename %>">
-                        Delete
-                    </label>
-                </div>
             </div>
-        <% }) %>
-    </div>
-</div>
 
-            
-            <div class="mb-3">
+            <div class="mb-3" id="image-upload-section">
                 <label for="image" class="form-label">Upload New Images</label>
-                <input name="listing[image]" type="file" class="form-control" multiple>
+                <input id="image" name="listing[image]" type="file" class="form-control" multiple accept="image/*">
             </div>
-            
-            <div class="mb-3">
-                <label for="propertyType" class="form-label">Property Type</label>
-                <select name="listing[propertyType]" class="form-select" required>
-                    <% const propertyTypes = ["Hotel","Resort","Bungalow", "Apartment","Cabin","Cottage","Glamping","Hostel","Ryokan","Farmhouse","Boat","Tent", "Villa", "Other"]; %>
-                    <% for(let type of propertyTypes) { %>
-                        <option value="<%= type %>" <%= listing.propertyType === type ? 'selected' : '' %>><%= type %></option>
-                    <% } %>
-                </select>
-                <div class="invalid-feedback">Please select a valid Property Type</div>
-            </div>
-            
+        </div>
+
+        <div class="hosting-card">
+            <h5>Pricing & Location</h5>
+            <p class="hosting-sub">Update pricing and location. Coordinates are re-generated automatically.</p>
             <div class="row">
                 <div class="mb-3 col-md-4">
-                    <label for="price" class="form-label">Price</label>
-                    <input name="listing[price]" value="<%= listing.price %>" type="number" class="form-control" min="1" required>
-                    <div class="invalid-feedback">Please enter a valid Price</div>
+                    <label for="price" class="form-label">Price Per Night (INR)</label>
+                    <input id="price" name="listing[price]" value="<%= listing.price %>" type="number" class="form-control" min="1" required>
+                    <div class="invalid-feedback">Please enter a valid price.</div>
                 </div>
-                <div class="mb-3 col-md-4">
-                    <label for="location" class="form-label">Location</label>
-                    <input name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" required>
-                    <div class="invalid-feedback">Please enter a valid Location</div>
-                </div>
-                <div class="mb-3 col-md-4">
-                    <label for="country" class="form-label">Country</label>
-                    <input name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" required>
-                    <div class="invalid-feedback">Please enter a valid Country</div>
-                </div>
-            </div>
-            
-            <div class="mb-3">
-                <label class="form-label">Facilities</label>
-                <div class="row">
-                     <% const facilitiesList = ["Wifi", "Swimming Pool","Spa & Wellness","Restaurant", "AC", "Kitchen", "Free Parking", "Washing Machine","Laundry" ,"TV", "Pet Friendly", "Gym","Bar","Breakfast", "Family Friendly", "Business Center", "Airport Shuttle", "Fireplace", "Outdoor Space", "Smoke Alarm"]; %>
-                     <% for(let facility of facilitiesList) { %>
-                        <div class="col-md-3 mb-2">
-                            <input type="checkbox" id="facility-<%= facility %>" name="listing[facilities]" value="<%= facility %>"
-                            <%= (listing.facilities && listing.facilities.includes(facility)) ? 'checked' : '' %>>
-                            <label for="facility-<%= facility %>"><%= facility %></label>
+                <div class="mb-3 col-md-8" data-india-location-picker>
+                    <div class="row">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label for="state" class="form-label">State / UT</label>
+                            <select id="state" name="listing[state]" class="form-select" required data-state-select data-selected="<%= listing.state || '' %>">
+                                <option value="" selected disabled>Choose state or UT...</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a valid state / UT.</div>
                         </div>
-                     <% } %>
+                        <div class="col-md-6">
+                            <label for="city" class="form-label">City</label>
+                            <select id="city" name="listing[city]" class="form-select" required data-city-select data-selected="<%= listing.city || '' %>" disabled>
+                                <option value="" selected disabled>Choose city...</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a valid city.</div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <button class="btn btn-dark edit-btn mt-3">Save</button>
-        </form>
-    </div>
+        <div class="hosting-card">
+            <h5>Amenities</h5>
+            <p class="hosting-sub">Tick all facilities that are currently available.</p>
+            <div class="row g-2">
+                <% const facilitiesList = ["Wifi", "Swimming Pool","Spa & Wellness","Restaurant", "AC", "Kitchen", "Free Parking", "Washing Machine","Laundry" ,"TV", "Pet Friendly", "Gym","Bar","Breakfast", "Family Friendly", "Business Center", "Airport Shuttle", "Fireplace", "Outdoor Space", "Smoke Alarm"]; %>
+                <% for(let facility of facilitiesList) { %>
+                    <div class="col-md-4 col-lg-3">
+                        <label class="facility-chip" for="facility-<%= facility %>">
+                            <input type="checkbox" id="facility-<%= facility %>" name="listing[facilities]" value="<%= facility %>" <%= (listing.facilities && listing.facilities.includes(facility)) ? 'checked' : '' %>>
+                            <span><%= facility %></span>
+                        </label>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="sticky-actions">
+            <div class="sticky-actions-inner">
+                <small class="text-muted">Changes will update your listing and map pin.</small>
+                <button class="btn btn-dark px-4">Save Changes</button>
+            </div>
+        </div>
+    </form>
 </div>
