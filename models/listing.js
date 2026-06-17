@@ -106,6 +106,46 @@ const listingSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  listingType: {
+    type:String,
+    enum:[
+        "Entire Property",
+        "Private Room",
+        "Shared Room"
+    ],
+    default:"Entire Property"
+  },
+  bedrooms:{
+    type:Number,
+    default:1
+  },
+  bathrooms:{
+    type:Number,
+    default:1
+  },
+  maxGuests:{
+    type:Number,
+    default:2
+  },
+  bookingMode:{
+    type:String,
+    enum:["auto","manual"],
+    default:"manual"
+  },
+  status:{
+    type:String,
+    enum:["draft","published"],
+    default:"published"
+  },
+  averageRating:{
+    type:Number,
+    default:0
+  },
+  unavailableDates:[
+    {
+        type:Date
+    }
+  ],
 });
 
 // Middleware: Delete reviews when a listing is deleted

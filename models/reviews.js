@@ -16,6 +16,15 @@ const reviewSchema = new Schema({
         type: Date,
         default: Date.now(),
     },
+    property:{
+    type:Schema.Types.ObjectId,
+    ref:"Listing"
+    },
+    booking:{
+    type:Schema.Types.ObjectId,
+    ref:"Booking",
+    default: null
+    },
 });
 
 module.exports = mongoose.model("Review",reviewSchema);

@@ -32,8 +32,6 @@ module.exports.isOwner = async (req, res, next) => {
   next();
 };
 
-
-
 module.exports.isReviewOwner = async(req,res,next) => {
     let { id, reviewId } = req.params;
     let review = await Review.findById(reviewId);

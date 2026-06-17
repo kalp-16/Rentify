@@ -17,6 +17,19 @@ const userSchema = new Schema({
             message: "Username cannot be null.",
         },
     },
+    profileImage: {
+        url: String,
+        filename: String
+    },
+    role: {
+        type: String,
+        enum: ["guest","host","admin"],
+        default: "guest"
+    },
+    wishlist: [{
+        type: Schema.Types.ObjectId,
+        ref: "Listing"
+    }]
 });
 
 userSchema.plugin(passportLocalMongoose);
