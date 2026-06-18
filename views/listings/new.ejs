@@ -1,66 +1,4 @@
 <% layout("/layouts/boilerplate") %>
-<style>
-    .hosting-wrap {
-        max-width: 980px;
-        margin: 1.25rem auto 5rem;
-    }
-    .hosting-head {
-        border-bottom: 1px solid #ececec;
-        padding-bottom: 1rem;
-        margin-bottom: 1.25rem;
-    }
-    .hosting-head h2 {
-        font-weight: 700;
-        letter-spacing: -0.01em;
-        margin-bottom: 0.35rem;
-    }
-    .hosting-head p {
-        margin: 0;
-        color: #6a6a6a;
-    }
-    .hosting-card {
-        border: 1px solid #e8e8e8;
-        border-radius: 18px;
-        background: #fff;
-        padding: 1.1rem 1.1rem 0.7rem;
-        margin-bottom: 1rem;
-    }
-    .hosting-card h5 {
-        font-weight: 700;
-        margin-bottom: 0.2rem;
-    }
-    .hosting-sub {
-        color: #707070;
-        font-size: 0.92rem;
-        margin-bottom: 0.9rem;
-    }
-    .facility-chip {
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        padding: 0.45rem 0.65rem;
-        background: #fff;
-        display: flex;
-        align-items: center;
-        gap: 0.45rem;
-        height: 100%;
-    }
-    .sticky-actions {
-        position: sticky;
-        bottom: 0;
-        background: #fff;
-        border-top: 1px solid #ececec;
-        padding: 0.95rem 0;
-        margin-top: 1.2rem;
-        z-index: 20;
-    }
-    .sticky-actions-inner {
-        max-width: 980px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-</style>
 
 <div class="hosting-wrap">
     <div class="hosting-head">
@@ -97,6 +35,73 @@
             </div>
         </div>
 
+        <div class="hosting-card">
+            <h5>Property Setup</h5>
+            <p class="hosting-sub"> Tell guests what kind of space they are booking.</p>
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label class="form-label">Listing Type</label>
+                    <select name="listing[listingType]" class="form-select">
+                        <option value="Entire Property">
+                            Entire Property
+                        </option>
+                        <option value="Private Room">
+                            Private Room
+                        </option>
+                        <option value="Shared Room">
+                            Shared Room
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label class="form-label"> Booking Mode </label>
+                    <select name="listing[bookingMode]" class="form-select">
+                        <option value="auto">
+                            Instant Booking
+                        </option>
+                        <option value="manual">
+                            Host Approval Required
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-3 col-md-4">
+                    <label class="form-label"> Bedrooms </label>
+                    <input
+                        type="number"
+                        name="listing[bedrooms]"
+                        min="1"
+                        value="1"
+                        class="form-control"
+                    >
+                </div>
+
+                <div class="mb-3 col-md-4">
+                    <label class="form-label"> Bathrooms </label>
+                    <input
+                        type="number"
+                        name="listing[bathrooms]"
+                        min="1"
+                        value="1"
+                        class="form-control"
+                    >
+                </div>
+
+                <div class="mb-3 col-md-4">
+                    <label class="form-label"> Max Guests </label>
+                    <input
+                        type="number"
+                        name="listing[maxGuests]"
+                        min="1"
+                        value="2"
+                        class="form-control"
+                    >
+                </div>
+
+            </div>
+        </div>
+        
         <div class="hosting-card">
             <h5>Photos</h5>
             <p class="hosting-sub">Guests are more likely to book listings with better visual details.</p>
