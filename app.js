@@ -19,10 +19,12 @@ const flash = require("connect-flash");
 const listings = require("./routes/listings.js");
 const reviews = require("./routes/reviews.js");
 const user = require("./routes/user.js");
+const bookingRoutes = require("./routes/bookings");
 const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./models/users.js");
 const { log } = require("console");
+const Booking = require("./models/bookings.js");
 
 main()
     .then(() => {
@@ -51,7 +53,7 @@ const store = MongoStore.create({
     touchAfter: 24*3600,
 });
 
-store.on("error", ()=> {
+store.on("error", (err)=> {
     console.log("ERROR in MONGO SESSION STORE",err);
 });
 
@@ -84,6 +86,7 @@ app.use((req,res,next) => {
 
 app.use('/listings',listings);
 app.use('/listings/:id/reviews',reviews);
+app.use('/bookings',bookingRoutes);
 app.use('/',user);
 
 app.get('/', (req, res) => {

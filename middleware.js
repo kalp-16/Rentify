@@ -35,6 +35,10 @@ module.exports.isOwner = async (req, res, next) => {
 module.exports.isReviewOwner = async(req,res,next) => {
     let { id, reviewId } = req.params;
     let review = await Review.findById(reviewId);
+    if(!review){
+        req.flash("error","Review not found!");
+        return res.redirect(`/listings/${id}`);
+    }
     if(!review.author.equals(res.locals.currUser._id)){
         req.flash("error","You are not the author of this review!!");
         return res.redirect(`/listings/${id}`);
@@ -51,4 +55,34 @@ module.exports.loadListing = async (req, res, next) => {
   }
   req.listing = listing; // attach to request
   next();
+};
+
+const Booking = require("./models/bookings");
+
+module.exports.isBookingHost = async (req,res,next) => {
+
+    const { id } = req.params;
+
+    const booking = await Booking.findById(id);
+
+    if(!booking){
+        req.flash("error","Booking not found");
+        return res.redirect("/bookings/host");
+    }
+
+    if(
+        booking.host.toString() !==
+        req.user._id.toString()
+    ){
+        req.flash(
+            "error",
+            "Unauthorized action"
+        );
+
+        return res.redirect("/bookings/host");
+    }
+
+    req.booking = booking;
+
+    next();
 };
