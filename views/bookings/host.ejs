@@ -1,0 +1,62 @@
+<% layout("/layouts/boilerplate") %>
+<h2 class="mb-4"> Host Dashboard </h2>
+<% if(bookings.length === 0){ %>
+    <div class="alert alert-info">
+         No booking requests yet.
+    </div>
+<% } %>
+<div class="row">
+    <% bookings.forEach(booking => { %>
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <img src="<%= booking.property.image?.[0]?.url %>" class="card-img-top">
+            <div class="card-body">
+                <h5> <%= booking.property.title %></h5>
+
+                <p>
+                    Guest:
+                    <strong>
+                        <%= booking.guest.username %>
+                    </strong>
+                </p>
+                <p>
+                    Check In:
+                    <%= new Date(
+                    booking.checkIn
+                    ).toLocaleDateString() %>
+                </p>
+                <p>
+                    Check Out:
+                    <%= new Date(
+                    booking.checkOut
+                    ).toLocaleDateString() %>
+                </p>
+                <p>
+                    Guests:
+                    <%= booking.guests %>
+                </p>
+                <p>
+                Status:
+                <% if(booking.status==="pending"){ %>
+                    <span class="badge bg-warning"> Pending </span>
+                <% } %>
+                <% if(booking.status==="approved"){ %>
+                <span class="badge bg-success"> Approved </span>
+                <% } %>
+                <% if(booking.status==="rejected"){ %>
+                <span class="badge bg-danger"> Rejected </span>
+                <% } %>
+                </p>
+                <% if(booking.status==="pending"){ %>
+                <form method="POST" action="/bookings/<%= booking._id %>/approve?_method=PATCH" class="d-inline">
+                    <button class="btn btn-success"> Approve </button>
+                </form>
+                <form method="POST" action="/bookings/<%= booking._id %>/reject?_method=PATCH" class="d-inline">
+                    <button class="btn btn-danger"> Reject </button>
+                </form>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    <% }) %>
+</div>

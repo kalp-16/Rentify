@@ -1,0 +1,397 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="show-page py-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="display-6 fw-bold mb-0"> <%= listing.title %> </h1>
+        <% if(currUser){ %>
+        <form action="/wishlist/<%= listing._id %>" method="POST">
+        <button class="btn btn-outline-dark">
+        <% if(isWishlisted){ %>
+            <i class="fa-solid fa-heart text-danger"></i>
+            Saved
+        <% } else { %>
+            <i class="fa-regular fa-heart"></i>
+            Save
+        <% } %>
+        </button>
+        </form>
+        <% } %>
+    </div>
+    <hr>
+    <!-- AIRBNB GALLERY -->
+    <div class="airbnb-gallery mb-5">
+        <div class="gallery-main">
+            <img
+                src="<%= listing.image?.[0]?.url %>"
+                alt="Property"
+                loading="eager">
+        </div>
+        <div class="gallery-grid">
+            <% listing.image.slice(1,5).forEach((img, index) => { %>
+                <div class="gallery-item gallery-item-<%= index + 1 %>">
+                    <img
+                        src="<%= img.url %>"
+                        alt="Property"
+                        loading="lazy">
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <div class="row g-4 show-content">
+        <!-- LEFT CONTENT -->
+        <div class="col-lg-8 show-details-column">
+            <!-- HOST CARD -->
+            <div class="host-card mb-4">
+                <div>
+                    <h3 class="mb-2">
+                        Hosted by
+                        <%= listing.owner?.username || "Deleted User" %>
+                    </h3>
+                    <div class="d-flex flex-wrap gap-3 text-muted show-meta-row">
+                        <span>
+                            <i class="fa-solid fa-house"></i>
+                            <%= listing.listingType %>
+                        </span>
+                        <span>
+                            <i class="fa-solid fa-users"></i>
+                            <%= listing.maxGuests %> Guests
+                        </span>
+                        <span>
+                            <i class="fa-solid fa-bed"></i>
+                            <%= listing.bedrooms %> Bedrooms
+                        </span>
+                        <span>
+                            <i class="fa-solid fa-bath"></i>
+                            <%= listing.bathrooms %> Bathrooms
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <!-- DESCRIPTION -->
+            <div class="section-card">
+                <h4 class="mb-3">
+                    About this place
+                </h4>
+                <p class="mb-0">
+                    <%= listing.description %>
+                </p>
+            </div>
+            <!-- AMENITIES -->
+            <% if(listing.facilities &&
+                listing.facilities.length > 0){ %>
+            <div class="section-card">
+                <h4 class="mb-4">
+                    What this place offers
+                </h4>
+                <div class="row">
+                    <% listing.facilities.forEach(facility => { %>
+                    <div class="col-md-6 mb-3">
+                        <div class="amenity-item">
+                            <i class="fa-solid fa-check"></i>
+                            <span>
+                                <%= facility %>
+                            </span>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+            <% } %>
+            <hr class="my-4">
+            <% if(listing.reviews && listing.reviews.length > 0) { %>
+                <div class="average-rating mb-4">
+                    <h4><i class="fas fa-star"></i> <%= avgRating %> &middot; <%= listing.reviews.length %> Review<%= listing.reviews.length > 1 ? 's' : '' %></h4>
+                </div>   
+                <p><b>All Reviews</b></p>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <% for (let review of listing.reviews) { %>
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= review.author?.username || "Anonymous" %></h5>
+                                <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
+                                <p class="card-text"><%= review.comment %></p>
+                            </div>
+                            <% if (currUser && review.author && currUser._id.equals(review.author._id)) { %>
+                            <div class="card-footer bg-transparent border-top-0">
+                                <form method="post" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                                    <button class="btn btn-dark btn-sm">Delete</button>
+                                </form>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% } %>
+                </div> 
+            <% } %>
+            <hr class="my-4">
+            <!-- LOCATION -->
+            <div class="section-card">
+                <h4 class="mb-3">
+                    Location
+                </h4>
+                <p class="mb-0">
+                    <%= listing.city %>,
+                    <%= listing.state %>
+                </p>
+            </div>
+            <hr class="mt-4">
+            <div class="section-card mt-4">
+                <form method="POST" action="/listings/<%= listing._id %>/reviews" class="needs-validation" novalidate>
+                    <h5>Add a Review:</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <fieldset class="starability-slot">
+                            <input type="radio" id="rate5" name="review[rating]" value="5" required /><label for="rate5" title="Amazing">5 stars</label>
+                            <input type="radio" id="rate4" name="review[rating]" value="4" /><label for="rate4" title="Very good">4 stars</label>
+                            <input type="radio" id="rate3" name="review[rating]" value="3" /><label for="rate3" title="Average">3 stars</label>
+                            <input type="radio" id="rate2" name="review[rating]" value="2" /><label for="rate2" title="Not good">2 stars</label>
+                            <input type="radio" id="rate1" name="review[rating]" value="1" /><label for="rate1" title="Terrible">1 star</label>
+                        </fieldset>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">Comment</label>
+                        <textarea id="comment" name="review[comment]" class="form-control" rows="3" required></textarea>
+                        <div class="invalid-feedback">Please add a comment.</div>
+                    </div>
+                    <button type="submit" class="btn btn-dark">Submit Review</button>
+                </form>
+            </div> 
+            <div class="section-card">
+                <h4 class="mb-3"> Where you'll be </h4>
+                <div
+                    id="listing-map"
+                    class="listing-map"
+                    data-coordinates='<%- JSON.stringify(listing.coordinates || []) %>'
+                    data-popup-text='<%- JSON.stringify(`${listing.city || ''}, ${listing.state || ''}`) %>'>
+                </div>
+            </div>
+            <% if(currUser && listing.owner && currUser._id.equals(listing.owner._id)){ %>
+            <div class="section-card">
+                <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline-dark"> Edit Property </a>
+                <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" class="d-inline">
+                    <button class="btn btn-danger"> Delete </button>
+                </form>
+            </div>
+            <% } %>
+        </div>
+        <!-- RIGHT SIDE BOOKING CARD -->
+        <div class="col-lg-4">
+        <div class="booking-card shadow-sm" data-price-per-night="<%= listing.price %>">
+            <div class="d-flex justify-content-between align-items-center mb-3 booking-head">
+                <h3 class="mb-0"> ₹<%= listing.price.toLocaleString("en-IN") %> </h3>
+                <small>/ night</small>
+            </div>
+
+            <% if(listing.bookingMode === "auto"){ %>
+                <div class="alert alert-success booking-alert"> Instant Booking Available
+                </div>
+            <% } else { %>
+                <div class="alert alert-warning booking-alert"> Host Approval Required
+                </div>
+            <% } %>
+
+            <form
+                class="booking-form"
+                action="/bookings/<%= listing._id %>/book"
+                method="POST" >
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label"> Check In </label>
+                        <input
+                            type="date"
+                            id="checkIn"
+                            name="checkIn"
+                            class="form-control"
+                            required>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label"> Check Out </label>
+                        <input
+                            type="date"
+                            id="checkOut"
+                            name="checkOut"
+                            class="form-control"
+                            required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"> Guests </label>
+                    <input
+                        type="number"
+                        name="guests"
+                        min="1"
+                        max="<%= listing.maxGuests %>"
+                        value="1"
+                        class="form-control"
+                        required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"> Special Requests </label>
+                    <textarea name="specialRequests" rows="3" class="form-control"></textarea>
+                </div>
+                <button class="btn btn-danger w-100 booking-submit-btn"> Reserve </button>
+            </form>
+        <hr>
+        <div id="priceBreakdown" class="price-breakdown">
+            <div class="d-flex justify-content-between">
+                <span>
+                    ₹<%= listing.price.toLocaleString("en-IN") %> x
+                    <span id="nightCount"> 0 </span>
+                    nights
+                </span>
+                <span id="totalPrice"> ₹0 </span>
+            </div>
+            <hr>
+            <div
+                class="d-flex justify-content-between fw-bold">
+                <span>Total</span>
+                <span id="grandTotal"> ₹0 </span>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+<script>
+
+const leafletCss = document.createElement('link');
+leafletCss.rel = 'stylesheet';
+leafletCss.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+leafletCss.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9dT/miZyoHS5obTRR9BMY=';
+leafletCss.crossOrigin = '';
+document.head.appendChild(leafletCss);
+
+const leafletScript = document.createElement('script');
+leafletScript.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+leafletScript.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+leafletScript.crossOrigin = '';
+leafletScript.onload = () => {
+    const mapElement = document.getElementById('listing-map');
+    const coordinates = JSON.parse(mapElement.dataset.coordinates || '[]');
+    const popupText = mapElement.dataset.popupText || '';
+
+    if (Array.isArray(coordinates) && coordinates.length === 2 && mapElement) {
+        const longitude = Number(coordinates[0]);
+        const latitude = Number(coordinates[1]);
+
+        if (!Number.isNaN(longitude) && !Number.isNaN(latitude)) {
+            const map = L.map('listing-map').setView([latitude, longitude], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            L.marker([latitude, longitude]).addTo(map)
+                .bindPopup(popupText)
+                .openPopup();
+        }
+    }
+};
+document.head.appendChild(leafletScript);
+
+const checkIn =
+document.querySelector(
+'input[name="checkIn"]'
+);
+
+const checkOut =
+document.querySelector(
+'input[name="checkOut"]'
+);
+
+const nightCount =
+document.getElementById(
+'nightCount'
+);
+
+const totalPrice =
+document.getElementById(
+'totalPrice'
+);
+
+const grandTotal =
+document.getElementById(
+'grandTotal'
+);
+
+const pricePerNight = Number(
+document.querySelector(
+'.booking-card'
+).dataset.pricePerNight
+);
+
+const today = new Date();
+const todayString = new Date(
+today.getTime() - (today.getTimezoneOffset() * 60000)
+).toISOString().split('T')[0];
+
+checkIn.min = todayString;
+checkOut.min = todayString;
+
+checkIn.addEventListener(
+'change',
+() => {
+    if (checkIn.value) {
+        checkOut.min = checkIn.value;
+
+        if (checkOut.value && checkOut.value <= checkIn.value) {
+            checkOut.value = "";
+        }
+    }
+
+    updatePrice();
+}
+);
+
+function updatePrice(){
+
+    if(
+        !checkIn.value ||
+        !checkOut.value
+    ){
+        return;
+    }
+
+    const start =
+    new Date(checkIn.value);
+
+    const end =
+    new Date(checkOut.value);
+
+    const nights =
+    Math.ceil(
+        (end-start) /
+        (1000*60*60*24)
+    );
+
+    if(nights <= 0) return;
+
+    const total =
+    nights * pricePerNight;
+
+    nightCount.textContent =
+    nights;
+
+    totalPrice.textContent =
+    "₹" + total.toLocaleString();
+
+    grandTotal.textContent =
+    "₹" + total.toLocaleString();
+}
+
+checkIn.addEventListener(
+'change',
+updatePrice
+);
+
+checkOut.addEventListener(
+'change',
+updatePrice
+);
+
+</script>

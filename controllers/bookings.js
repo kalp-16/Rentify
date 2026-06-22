@@ -200,3 +200,85 @@ module.exports.cancelBooking = async (req, res) => {
 
     res.redirect("/bookings/my");
 };
+
+module.exports.approveBooking = async (req, res) => {
+
+    const booking = await Booking.findById(req.params.id)
+        .populate("property");
+
+    if (!booking) {
+        req.flash("error", "Booking not found");
+        return res.redirect("/bookings/host");
+    }
+
+    if (
+        booking.host.toString() !==
+        req.user._id.toString()
+    ) {
+        req.flash("error", "Unauthorized");
+        return res.redirect("/bookings/host");
+    }
+
+    booking.status = "approved";
+
+    await booking.save();
+
+    const listing = booking.property;
+
+    const dates = [];
+    const current = new Date(booking.checkIn);
+
+    while (current < booking.checkOut) {
+        dates.push(new Date(current));
+        current.setDate(current.getDate() + 1);
+    }
+
+    listing.unavailableDates.push(...dates);
+
+    await listing.save();
+
+    req.flash(
+        "success",
+        "Booking approved"
+    );
+
+    res.redirect("/bookings/host");
+};
+module.exports.rejectBooking = async (req, res) => {
+
+    const booking =
+        await Booking.findById(req.params.id);
+
+    if (!booking) {
+
+        req.flash(
+            "error",
+            "Booking not found"
+        );
+
+        return res.redirect("/bookings/host");
+    }
+
+    if (
+        booking.host.toString() !==
+        req.user._id.toString()
+    ) {
+        req.flash(
+            "error",
+            "Unauthorized"
+        );
+
+        return res.redirect("/bookings/host");
+    }
+
+    booking.status = "rejected";
+
+    await booking.save();
+
+    req.flash(
+        "success",
+        "Booking rejected"
+    );
+
+    res.redirect("/bookings/host");
+};

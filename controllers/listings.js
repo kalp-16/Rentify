@@ -167,7 +167,14 @@ module.exports.showListing = async (req, res) => {
     }
   }
 
-  res.render("listings/show.ejs", { listing, avgRating });
+  let isWishlisted = false;
+  if (req.user) {
+    isWishlisted = req.user.wishlist?.some(
+      (item) => (item?._id || item).toString() === listing._id.toString()
+    );
+  }
+
+  res.render("listings/show2.ejs", { listing, avgRating, isWishlisted });
 };
 
 module.exports.editListing = async (req, res) => {

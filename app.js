@@ -25,6 +25,7 @@ const localStrategy = require("passport-local");
 const User = require("./models/users.js");
 const { log } = require("console");
 const Booking = require("./models/bookings.js");
+const wishlistRoutes = require("./routes/wishlist.js");
 
 main()
     .then(() => {
@@ -75,7 +76,23 @@ app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.deserializeUser(async (id, done) => {
+    try {
+        let user;
+
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            user = await User.findById(id).populate("wishlist");
+        }
+
+        if (!user) {
+            user = await User.findOne({ username: id }).populate("wishlist");
+        }
+
+        done(null, user);
+    } catch (err) {
+        done(err, null);
+    }
+});
 
 app.use((req,res,next) => {
     res.locals.success = req.flash("success");
@@ -88,7 +105,7 @@ app.use('/listings',listings);
 app.use('/listings/:id/reviews',reviews);
 app.use('/bookings',bookingRoutes);
 app.use('/',user);
-
+app.use("/",wishlistRoutes);
 app.get('/', (req, res) => {
     res.redirect('/listings'); // Redirects the root URL to /listings
 });

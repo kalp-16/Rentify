@@ -31,5 +31,14 @@ router.patch(
     isLoggedIn,
     bookingController.cancelBooking
 );
-
+router.patch(
+    "/:id/approve",
+    isLoggedIn,
+    bookingController.approveBooking
+);
+router.patch(
+    "/:id/reject",
+    isLoggedIn,
+    bookingController.rejectBooking
+);
 module.exports = router;
