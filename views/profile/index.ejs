@@ -1,0 +1,81 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container profile-page py-4">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <i class="fa-solid fa-user"></i>
+        </div>
+        <div>
+            <h2 class="mb-1"><%= user.username %></h2>
+            <p class="text-muted mb-2"><%= user.email %></p>
+            <span class="badge bg-dark"> Rentify Host</span>
+        </div>
+    </div>
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card profile-stat text-center h-100">
+                <div class="card-body">
+                    <h2><%= myListings.length %></h2>
+                    <p>My Listings</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card profile-stat text-center h-100">
+                <div class="card-body">
+                    <h2><%= myBookings.length %></h2>
+                    <p>My Bookings</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card profile-stat text-center h-100">
+                <div class="card-body">
+                    <h2><%= user.wishlist.length %></h2>
+                    <p>Wishlist</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card profile-stat text-center h-100">
+                <div class="card-body">
+                    <h2><%= hostBookings.length %></h2>
+                    <p>Pending Requests</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="quick-actions mb-5">
+        <a href="/listings/new" class="btn btn-dark"> Host New Property </a>
+        <a href="/wishlist" class="btn btn-outline-dark"> Wishlist</a>
+        <a href="/bookings/my" class="btn btn-outline-dark"> My Bookings</a>
+        <a href="/bookings/host" class="btn btn-outline-dark"> Host Dashboard</a>
+    </div>
+    <div class="section-title">
+        <h3>My Listings</h3>
+    </div>
+    <% if(myListings.length === 0){ %>
+        <div class="alert alert-info">
+            You haven't hosted any property yet.
+        </div>
+        <% } else { %>
+        <div class="row">
+            <% myListings.forEach(listing => { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card listing-card h-100">
+                        <img src="<%= listing.image?.[0]?.url %>" class="card-img-top listing-image" alt="listing">
+                        <div class="card-body">
+                            <h5><%= listing.title %></h5>
+                            <p class="text-muted">
+                                <%= listing.city %>,
+                                <%= listing.state %>
+                            </p>
+                            <p> ₹<%= listing.price.toLocaleString("en-IN") %>/night</p>
+                            <a href="/listings/<%= listing._id %>" class="btn btn-dark btn-sm">View Property</a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>

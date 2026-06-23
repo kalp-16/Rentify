@@ -26,6 +26,7 @@ const User = require("./models/users.js");
 const { log } = require("console");
 const Booking = require("./models/bookings.js");
 const wishlistRoutes = require("./routes/wishlist.js");
+const profileRoutes = require("./routes/profile.js");
 
 main()
     .then(() => {
@@ -106,6 +107,7 @@ app.use('/listings/:id/reviews',reviews);
 app.use('/bookings',bookingRoutes);
 app.use('/',user);
 app.use("/",wishlistRoutes);
+app.use("/profile",profileRoutes);
 app.get('/', (req, res) => {
     res.redirect('/listings'); // Redirects the root URL to /listings
 });
