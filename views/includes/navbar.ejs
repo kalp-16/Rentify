@@ -1,27 +1,3 @@
-<!-- <nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top"> 
-  <div class="container-fluid">
-    <a class="navbar-brand d-flex align-items-center" href="/listings">
-      <img src="/android-chrome-512x512.png" style="width: 3.5rem; height: 3.5rem;" alt="logo" class="me-2">
-      <b style="color: red; font-size: 2rem;">Rentify</b>
-    </a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-   
-      <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="/listings/new">Become a host</a>
-        <% if (typeof currUser === 'undefined' || !currUser) { %>
-          <a class="nav-link active" href="/signup"><b>Sign up</b></a>
-          <a class="nav-link" href="/login"><b>Log in</b></a>
-        <% } %>
-        <% if (typeof currUser !== 'undefined' && currUser) { %>
-          <a class="nav-link" href="/logout"><b>Log out</b></a>
-        <% } %>
-         <li class="nav-item"> <a class="nav-link" href="/wishlist"> Wishlist </a> </li>
-    </div>
-  </div>
-</nav>-->
 <nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand d-flex align-items-center" href="/listings">
@@ -33,19 +9,55 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <div class="navbar-nav ms-auto align-items-lg-center">
-        <a class="nav-link" href="/listings/new"> Become a Host</a>
-        <% if(currUser){ %>
-          <a class="nav-link" href="/wishlist"><i class="fa-solid fa-heart text-danger"></i> Wishlist</a>
-          <a class="nav-link" href="/logout"><b>Log out</b></a>
-          <a class="nav-link" href="/bookings/host"> Host Dashboard</a>
-          <a class="nav-link" href="/profile"><b>Profile</b></a>
-        <% } else { %>
-          <a class="nav-link" href="/signup"><b>Sign up</b></a>
-          <a class="nav-link" href="/login"><b>Log in</b></a>
-        <% } %>
+    <div class="navbar-nav ms-auto align-items-center">
+      <a class="nav-link me-3" href="/listings/new">Become a Host</a>
+      <% if(currUser){ %>
+      <div class="dropdown">
+        <button class="btn profile-menu-btn" data-bs-toggle="dropdown">
+          <% if(
+              currUser.profileImage &&
+              currUser.profileImage.url
+          ){ %>
+          <img src="<%= currUser.profileImage.url %>" class="navbar-profile-pic">
+          <% } else { %>
+          <i class="fa-solid fa-user"></i>
+          <% } %>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow">
+          <li>
+            <a class="dropdown-item" href="/profile">
+              <i class="fa-solid fa-user me-2"></i> Profile
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="/wishlist">
+              <i class="fa-solid fa-heart me-2 text-danger"></i> Wishlist
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="/bookings/my">
+              <i class="fa-solid fa-calendar-check me-2"></i> My Bookings
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="/bookings/host">
+              <i class="fa-solid fa-house me-2"></i> Host Dashboard
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a class="dropdown-item text-danger" href="/logout">
+              <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+            </a>
+          </li>
+        </ul>
       </div>
+      <% } else { %>
+        <a class="nav-link" href="/signup">Sign up</a>
+        <a class="nav-link" href="/login">Log in</a>
+      <% } %>
     </div>
   </div>
 </nav>

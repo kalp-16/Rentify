@@ -9,9 +9,6 @@
     </div>
 
 <div class="container mt-4">
-
-    
-
     <!-- Metro Cities Section -->
     <h3 class="mb-3">Top Metro Cities</h3>
     <div class="row row-cols-1 row-cols-md-4 g-3 mb-5" >
@@ -51,82 +48,128 @@
     <!-- Property Types Section -->
     <h3 class="mb-3">Browse by Property Type</h3>
     <% const propertyTypeList = [
-  { name: "Hotel", img: "hotel.jpeg" },
-  { name: "Resort", img: "resort.jpeg" },
-  { name: "Bungalow", img: "bungalow.jpeg" },
-  { name: "Apartment", img: "apartment.jpeg" },
-  { name: "Cabin", img: "cabin.jpeg" },
-  { name: "Glamping", img: "glamping.jpeg" },
-  { name: "Hostel", img: "hostel.jpeg" },
-  { name: "Ryokan", img: "ryokan.jpeg" },
-  { name: "Farmhouse", img: "farmhouse.jpeg" },
-  { name: "Houseboat", img: "houseboat.jpeg" },
-  { name: "Villa", img: "villa.jpeg" }
-]; %>
+    { name: "Hotel", img: "hotel.jpeg" },
+    { name: "Resort", img: "resort.jpeg" },
+    { name: "Bungalow", img: "bungalow.jpeg" },
+    { name: "Apartment", img: "apartment.jpeg" },
+    { name: "Cabin", img: "cabin.jpeg" },
+    { name: "Glamping", img: "glamping.jpeg" },
+    { name: "Hostel", img: "hostel.jpeg" },
+    { name: "Ryokan", img: "ryokan.jpeg" },
+    { name: "Farmhouse", img: "farmhouse.jpeg" },
+    { name: "Houseboat", img: "houseboat.jpeg" },
+    { name: "Villa", img: "villa.jpeg" }
+    ]; %>
 
-<div id="propertyCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
-  <div class="carousel-inner">
-    <% propertyTypeList.forEach((type, index) => { %>
-      <% if (index % 4 === 0) { %>
-        <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
-          <div class="row justify-content-center">
-      <% } %>
-
-            <div class="col-md-3">
-              <a href="/listings/search?q=<%= type.name %>" class="text-decoration-none text-dark">
-                <div class="card shadow-sm h-100 text-center p-3">
-                  <img src="/images/properties/<%= type.img %>" class="card-img-top rounded" 
-                       style="height: 150px; object-fit: cover;" alt="<%= type.name %>">
-                  <div class="card-body">
-                    <h5 class="card-title"><%= type.name %></h5>
-                  </div>
+    <div id="propertyCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <% propertyTypeList.forEach((type, index) => { %>
+          <% if (index % 4 === 0) { %>
+            <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+              <div class="row justify-content-center">
+                <% } %>
+                <div class="col-md-3">
+                  <a href="/listings/search?q=<%= type.name %>" class="text-decoration-none text-dark">
+                    <div class="card shadow-sm h-100 text-center p-3">
+                      <img src="/images/properties/<%= type.img %>" class="card-img-top rounded" 
+                          style="height: 150px; object-fit: cover;" alt="<%= type.name %>">
+                      <div class="card-body">
+                        <h5 class="card-title"><%= type.name %></h5>
+                      </div>
+                    </div>
+                  </a>
                 </div>
-              </a>
+                <% if ((index + 1) % 4 === 0 || index === propertyTypeList.length - 1) { %>
+              </div>
             </div>
+          <% } %>
+        <% }) %>
+      </div>
 
-      <% if ((index + 1) % 4 === 0 || index === propertyTypeList.length - 1) { %>
-          </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+
+    
+    <!-- Featured Stays -->
+
+    <div class="d-flex justify-content-between align-items-center mt-5 mb-4">
+        <h2 class="fw-bold"> Featured Stays</h2>
+    </div>
+    <div class="row">
+      <% allListings.slice(0,6).forEach(listing => { %>
+      <div class="col-lg-4 col-md-6 mb-4">
+          <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
+              <div class="card border-0 shadow-sm listing-card-new h-100">
+                  <% if(listing.image && listing.image.length > 0){ %>
+                      <img src="<%= listing.image[0].url %>" class="card-img-top listing-image-new">
+                  <% } else { %>
+                      <img src="https://placehold.co/600x400" class="card-img-top listing-image-new">
+                  <% } %>
+                  <div class="card-body">
+                      <div class="d-flex justify-content-between">
+                          <h5 class="fw-bold"><%= listing.title %></h5>
+                          <span>
+                          <i class = "fa fa-star text-warning"></i>
+                          <%= listing.averageRating && listing.averageRating > 0
+                                  ? listing.averageRating.toFixed(1)
+                                  : "New" %>
+                          <% if(listing.reviews && listing.reviews.length > 0){ %>
+                              (<%= listing.reviews.length %>)
+                          <% } %>
+                          </span>
+                      </div>
+                      <p class="text-muted mb-2">
+                          <%= listing.city %>,
+                          <%= listing.state %>
+                      </p>
+                      <span class="badge bg-light text-dark"><%= listing.propertyType %></span>
+                      <div class="mt-3">
+                          <span class="fw-bold">₹<%= listing.price.toLocaleString("en-IN") %></span> / night
+                      </div>
+                  </div>
+              </div>
+          </a>
+      </div>
+      <% }) %>
+    </div>
+    <!-- Luxury Collection -->
+    <div class="mt-5 mb-4">
+      <h2 class="fw-bold">Luxury Collection</h2>
+    </div>
+    <div class="row">
+      <%
+      allListings
+      .filter(listing => listing.price >= 5000)
+      .slice(0,4)
+      .forEach(listing => {
+      %>
+      <div class="col-lg-3 col-md-6 mb-4">
+          <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
+              <div class="card border-0 shadow-sm listing-card-new">
+                  <img src="<%= listing.image?.[0]?.url %>" class="card-img-top listing-image-new">
+                  <div class="card-body">
+                      <h6 class="fw-bold"><%= listing.title %></h6>
+                      <small class="text-muted"><%= listing.city %></small>
+                  </div>
+              </div>
+          </a>
+      </div>
+      <% }) %>
+    </div>
+    <!-- Become Host Banner -->
+    <div class="host-banner">
+        <div>
+            <h2 class="fw-bold">Become a Host</h2>
+            <p>Earn money by sharing your property with travelers.</p>
         </div>
-      <% } %>
-    <% }) %>
-  </div>
-
-  <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div>
-
-
-    <!-- All Listings Section -->
-    <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-1">
-        <% for(let listing of allListings) { %>
-        <div class="col">
-            <a href="/listings/<%=listing._id %>" class="listing-link">
-                <div class="listing-card">
-                    <div class="img-wrapper">
-                         <% if (listing.image && listing.image.length > 0) { %>
-                            <img src="<%= listing.image[0].url %>" class="card-img-top" alt="Listing Image">
-                        <% } else { %>
-                            <img src="https://placehold.co/400x300?text=No+Image" class="card-img-top" alt="No image available">
-                        <% } %>
-                        <i class="fa-regular fa-heart wishlist-icon"></i>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-row">
-                            <b class="listing-location"><%= [listing.location, listing.city || 'Unknown City', listing.state || 'Unknown State'].filter(Boolean).join(', ') %></b>
-                        </div>
-                        <p class="listing-title"><%= listing.title %></p>
-                        <p class="listing-price"><b>&#8377;<%= listing.price.toLocaleString("en-IN") %>/night</b></p>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <% } %>
+        <a href="/listings/new" class="btn btn-outline-danger btn-lg host-btn"> Start Hosting </a>
     </div>
 </div>
 
@@ -136,33 +179,27 @@
     "Find Your Perfect Getaway ",
     "Travel. Stay. Relax. "
   ];
-
   let i = 0;       // phrase index
   let j = 0;       // character index
   let currentPhrase = [];
   let isDeleting = false;
   let isEnd = false;
-
   function loop() {
     isEnd = false;
     document.getElementById("animatedText").innerHTML = currentPhrase.join("");
-
     if (i < phrases.length) {
       if (!isDeleting && j <= phrases[i].length) {
         currentPhrase.push(phrases[i][j]);
         j++;
       }
-
       if (isDeleting && j <= phrases[i].length) {
         currentPhrase.pop();
         j--;
       }
-
       if (j == phrases[i].length) {
         isEnd = true;
         isDeleting = true;
       }
-
       if (isDeleting && j === 0) {
         currentPhrase = [];
         isDeleting = false;
@@ -172,10 +209,8 @@
         }
       }
     }
-
     const typingSpeed = isEnd ? 2000 : isDeleting ? 50 : 100;
     setTimeout(loop, typingSpeed);
   }
-
   loop();
 </script>
