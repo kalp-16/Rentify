@@ -70,6 +70,36 @@ const sessionOptions = {
         httpOnly: true,
     },
 };
+
+const sendEmail = require("./utils/email");
+
+app.get("/test-email", async (req,res)=>{
+
+    try{
+
+        await sendEmail(
+            "kalptrivedi1601@gmail.com",
+            "Rentify Test Email",
+            `
+            <h2>Welcome to Rentify</h2>
+
+            <p>
+            Email service is working successfully.
+            </p>
+            `
+        );
+
+        res.send("Email Sent");
+
+    }catch(err){
+
+        console.log(err);
+
+        res.send("Email Failed");
+    }
+
+});
+
 app.use(session(sessionOptions));
 app.use(flash());
 app.use(passport.initialize());

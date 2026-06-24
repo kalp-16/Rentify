@@ -1,5 +1,6 @@
 const Booking = require("../models/bookings");
 const Listing = require("../models/listing");
+const sendEmail = require("../utils/email");
 
 function getDatesBetween(startDate, endDate) {
     const dates = [];
@@ -101,7 +102,39 @@ module.exports.createBooking = async (req, res) => {
         });
 
         await booking.save();
+        if (listing.owner && listing.owner.email) {
+            await sendEmail(
+                listing.owner.email,
 
+                "New Booking Request - Rentify",
+
+                `
+                <h2>New Booking Request</h2>
+
+                <p>
+                A guest has requested to stay at your property.
+                </p>
+
+                <hr>
+
+                <p><strong>Property:</strong> ${listing.title}</p>
+
+                <p><strong>Guest:</strong> ${req.user.username}</p>
+
+                <p><strong>Check In:</strong> ${checkIn}</p>
+
+                <p><strong>Check Out:</strong> ${checkOut}</p>
+
+                <p><strong>Guests:</strong> ${guests}</p>
+
+                <br>
+
+                <p>
+                Login to Rentify to approve or reject the request.
+                </p>
+                `
+            );
+        }
         if (listing.bookingMode === "auto") {
             listing.unavailableDates.push(
                 ...bookedDates
@@ -204,8 +237,8 @@ module.exports.cancelBooking = async (req, res) => {
 module.exports.approveBooking = async (req, res) => {
 
     const booking = await Booking.findById(req.params.id)
-        .populate("property");
-
+        .populate("property")
+        .populate("guest");
     if (!booking) {
         req.flash("error", "Booking not found");
         return res.redirect("/bookings/host");
@@ -236,7 +269,48 @@ module.exports.approveBooking = async (req, res) => {
     listing.unavailableDates.push(...dates);
 
     await listing.save();
+        await sendEmail(
 
+        booking.guest.email,
+
+        "Booking Confirmed - Rentify",
+
+        `
+        <h2>🎉 Booking Confirmed</h2>
+
+        <p>
+        Your booking has been approved.
+        </p>
+
+        <hr>
+
+        <p>
+        <strong>Property:</strong>
+        ${listing.title}
+        </p>
+
+        <p>
+        <strong>Check In:</strong>
+        ${booking.checkIn.toDateString()}
+        </p>
+
+        <p>
+        <strong>Check Out:</strong>
+        ${booking.checkOut.toDateString()}
+        </p>
+
+        <p>
+        <strong>Total Price:</strong>
+        ₹${booking.totalPrice}
+        </p>
+
+        <br>
+
+        <p>
+        Thank you for choosing Rentify ❤️
+        </p>
+        `
+    );
     req.flash(
         "success",
         "Booking approved"
@@ -245,20 +319,15 @@ module.exports.approveBooking = async (req, res) => {
     res.redirect("/bookings/host");
 };
 module.exports.rejectBooking = async (req, res) => {
-
     const booking =
-        await Booking.findById(req.params.id);
-
+        await Booking.findById(req.params.id).populate("guest").populate("property");
     if (!booking) {
-
         req.flash(
             "error",
             "Booking not found"
         );
-
         return res.redirect("/bookings/host");
     }
-
     if (
         booking.host.toString() !==
         req.user._id.toString()
@@ -267,18 +336,44 @@ module.exports.rejectBooking = async (req, res) => {
             "error",
             "Unauthorized"
         );
-
         return res.redirect("/bookings/host");
     }
-
     booking.status = "rejected";
-
     await booking.save();
+    await sendEmail(
 
+        booking.guest.email,
+
+        "Booking Request Update - Rentify",
+
+        `
+        <h2>Booking Request Update</h2>
+
+        <p>
+        Unfortunately the host could not approve your booking.
+        </p>
+
+        <hr>
+
+        <p>
+        <strong>Property:</strong>
+        ${booking.property.title}
+        </p>
+
+        <p>
+        You may browse other available properties on Rentify.
+        </p>
+
+        <br>
+
+        <p>
+        Thank you for using Rentify.
+        </p>
+        `
+    );
     req.flash(
         "success",
         "Booking rejected"
     );
-
     res.redirect("/bookings/host");
 };
