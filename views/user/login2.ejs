@@ -1,0 +1,279 @@
+<% layout("/layouts/boilerplate") %>
+<div class="container signup-page py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="signup-card shadow">
+                <div class="row g-0">
+                    <!-- LEFT -->
+                    <div class="col-lg-5 signup-left">
+                        <h2>Join Rentify</h2>
+                        <p>
+                            Discover unique stays,
+                            connect with hosts,
+                            and experience travel
+                            differently.
+                        </p>
+                        <img
+                        src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900"
+                        class="img-fluid rounded-4 mt-4">
+                    </div>
+                    <!-- RIGHT -->
+                    <div class="col-lg-7 p-5">
+                        <h3 class="mb-4">Create Account</h3>
+                        <form action="/signup" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        <!-- Profile Picture -->
+                        <div class="text-center mb-4">
+                            <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" id="profilePreview" class="profile-preview">
+                            <div class="mt-3">
+                                <label for="profileImage" class="btn btn-outline-dark">
+                                    <i class="fa-solid fa-camera me-2"></i>
+                                    Upload Profile Photo
+                                </label>
+                                <input type="file" id="profileImage" name="profileImage" accept=".jpg,.jpeg,.png,.webp" hidden>
+                                <small class="text-muted d-block mt-2">JPG, PNG or WEBP (Max 5 MB)</small>
+                            </div>
+                        </div>
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control form-control-lg" name="username" required>
+                            <div class="invalid-feedback">
+                                Please enter a username.
+                            </div>
+                        </div>
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label"> Email Address</label>
+                            <input type="email" class="form-control form-control-lg" name="email" placeholder="Enter your email address" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid email.
+                            </div>
+                        </div>
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label"> Password</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-lg" id="password" name="password" minlength="8" placeholder="Minimum 8 characters" required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="mt-2">
+                                <div class="progress" style="height:8px;">
+                                    <div id="passwordStrength" class="progress-bar" style="width:0%;">
+                                    </div>
+                                </div>
+                                <small id="passwordText" class="text-muted"> Password Strength </small>
+                            </div>
+                        </div>
+                        <!-- Confirm Password -->
+                        <div class="mb-4">
+                            <label class="form-label"> Confirm Password</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-lg" id="confirmPassword" name="confirmPassword" required>
+                                <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                            <small id="passwordMatch" class="text-danger">
+                            </small>
+                        </div>
+                        <!-- Terms -->
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the
+                                <a href="#">
+                                    Terms &
+                                    Conditions
+                                </a>
+                            </label>
+                        </div>
+                        <button class="btn btn-danger w-100 btn-lg signup-btn">
+                            Create Account
+                        </button>
+                        <div class="text-center mt-4">
+                            Already have an account?
+                            <a href="/login"> Login</a>
+                        </div>
+                        </form>  
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+const profileInput =
+document.getElementById("profileImage");
+
+const preview =
+document.getElementById("profilePreview");
+
+profileInput.addEventListener("change",function(){
+
+const file=this.files[0];
+
+if(file){
+
+preview.src=URL.createObjectURL(file);
+
+}
+
+});
+
+
+const password=
+document.getElementById("password");
+
+const confirmPassword=
+document.getElementById("confirmPassword");
+
+const matchText=
+document.getElementById("passwordMatch");
+
+const strength=
+document.getElementById("passwordStrength");
+
+const strengthText=
+document.getElementById("passwordText");
+
+
+password.addEventListener("input",()=>{
+
+let value=password.value;
+
+let score=0;
+
+if(value.length>=8) score++;
+
+if(/[A-Z]/.test(value)) score++;
+
+if(/[0-9]/.test(value)) score++;
+
+if(/[^A-Za-z0-9]/.test(value)) score++;
+
+const colors=[
+"",
+"bg-danger",
+"bg-warning",
+"bg-info",
+"bg-success"
+];
+
+const widths=[
+"0%",
+"25%",
+"50%",
+"75%",
+"100%"
+];
+
+strength.className="progress-bar";
+
+if(score>0){
+
+strength.classList.add(colors[score]);
+
+}
+
+strength.style.width=widths[score];
+
+const labels=[
+"",
+"Weak",
+"Fair",
+"Good",
+"Strong"
+];
+
+strengthText.innerHTML=
+labels[score];
+
+});
+
+
+confirmPassword.addEventListener("keyup",()=>{
+
+if(confirmPassword.value===""){
+
+matchText.innerHTML="";
+
+return;
+
+}
+
+if(password.value===confirmPassword.value){
+
+matchText.className="text-success";
+
+matchText.innerHTML="Passwords match";
+
+}
+
+else{
+
+matchText.className="text-danger";
+
+matchText.innerHTML="Passwords do not match";
+
+}
+
+});
+
+
+document
+.getElementById("togglePassword")
+.onclick=function(){
+
+password.type=
+password.type==="password"
+?"text":"password";
+
+};
+
+
+document
+.getElementById("toggleConfirmPassword")
+.onclick=function(){
+
+confirmPassword.type=
+confirmPassword.type==="password"
+?"text":"password";
+
+};
+
+
+// Bootstrap Validation
+
+(()=>{
+'use strict';
+
+const forms=
+document.querySelectorAll('.needs-validation');
+
+Array.from(forms).forEach(form=>{
+
+form.addEventListener('submit',event=>{
+
+if(
+!form.checkValidity() ||
+password.value!==confirmPassword.value
+){
+
+event.preventDefault();
+
+event.stopPropagation();
+
+}
+
+form.classList.add('was-validated');
+
+},false);
+
+});
+
+})();
+
+</script>

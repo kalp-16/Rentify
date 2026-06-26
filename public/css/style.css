@@ -676,28 +676,189 @@ padding:1.5rem;
 ========================================== */
 
 .profile-menu-btn{
+
     width:48px;
     height:48px;
 
-    border-radius:50%;
-    border:1px solid #ddd;
+    padding:0;
 
-    background:#fff;
+    border:none;
+    background:transparent;
 
     display:flex;
-    align-items:center;
     justify-content:center;
+    align-items:center;
 
-    transition:.25s ease;
+    overflow:hidden;
+
+    border-radius:50%;
 }
 
 .profile-menu-btn:hover{
     box-shadow:0 4px 15px #fa2727;
 }
 
+/* ===========================
+   Navbar Profile Picture
+=========================== */
+
 .navbar-profile-pic{
+
     width:42px;
     height:42px;
+
     border-radius:50%;
+
     object-fit:cover;
+    object-position:center;
+
+    display:block;
+
+    border:2px solid #fff;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+/* ===============================
+   AUTH PAGES
+==================================*/
+
+.auth-page{
+    min-height:90vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f7f7f7;
+    padding:40px 0;
+}
+.auth-card{
+    width:100%;
+    max-width:600px;
+    background:#fff;
+    border:none;
+    border-radius:20px;
+    padding:45px;
+    box-shadow:0 10px 40px rgba(0,0,0,.08);
+}
+.auth-card h2{
+    font-weight:700;
+}
+.auth-card p{
+    color:#666;
+}
+.form-control{
+    border-radius:12px;
+    padding:12px 15px;
+}
+.form-control:focus{
+    border-color:#ff385c;
+    box-shadow:0 0 0 .15rem rgba(255,56,92,.15);
+}
+.auth-btn{
+    background:#ff385c;
+    border:none;
+    border-radius:12px;
+    padding:12px;
+    font-weight:600;
+}
+.auth-btn:hover{
+    background:#e31c5f;
+}
+.form-check-label{
+    font-size:.95rem;
+}
+hr{
+    margin:30px 0;
+}
+.auth-card a{
+    color:#ff385c;
+    text-decoration:none;
+    font-weight:600;
+}
+.auth-card a:hover{
+  text-decoration:underline;
+}
+/* =====================================
+   PROPERTY GALLERY
+===================================== */
+
+.gallery-hero{
+
+    position:relative;
+
+}
+
+.gallery-hero img{
+
+    width:100%;
+
+    height:600px;
+
+    object-fit:cover;
+
+    border-radius:20px;
+
+    cursor:pointer;
+
+}
+
+.gallery-btn{
+
+    position:absolute;
+
+    bottom:20px;
+
+    right:20px;
+
+}
+
+.thumbnail-row{
+
+    display:flex;
+
+    gap:10px;
+
+    overflow-x:auto;
+
+    padding-bottom:5px;
+
+}
+
+.gallery-thumb{
+
+    width:120px;
+
+    height:90px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    opacity:.7;
+
+    transition:.3s;
+
+}
+
+.gallery-thumb:hover{
+
+    opacity:1;
+
+}
+
+.active-thumb{
+
+    border:3px solid #ff385c;
+
+    opacity:1;
+
+}
+
+.gallery-full-image{
+
+    max-height:80vh;
+
+    object-fit:contain;
+
 }

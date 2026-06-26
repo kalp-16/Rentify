@@ -1,97 +1,222 @@
 <% layout("/layouts/boilerplate") %>
 
 <div class="container py-4">
-    <h2 class="mb-4"> My Bookings</h2>
+
+    <h2 class="mb-4">
+        My Bookings
+    </h2>
+
     <% if(bookings.length === 0){ %>
-        <div class="alert alert-info"> You have no bookings yet. </div>
+
+        <div class="alert alert-info text-center">
+
+            <h5>No Bookings Yet</h5>
+
+            <p class="mb-0">
+                Explore amazing stays and make your first booking.
+            </p>
+
+        </div>
+
     <% } else { %>
-        <div class="row">
 
-            <% bookings.forEach(booking => { %>
+    <div class="row">
 
-                <div class="col-md-6 mb-4">
+        <% bookings.forEach(booking=>{ %>
 
-                    <div class="card shadow-sm h-100">
+        <div class="col-lg-6 mb-4">
 
-                        <% if(booking.property?.image?.length){ %>
+            <div class="card shadow-sm h-100">
 
-                            <img
-                                src="<%= booking.property.image[0].url %>"
-                                class="card-img-top"
-                                style="height:220px; object-fit:cover;">
+                <% if(booking.property?.image?.length){ %>
+
+                    <img
+                        src="<%= booking.property.image[0].url %>"
+                        class="card-img-top"
+                        style="height:230px;object-fit:cover;">
+
+                <% } %>
+
+                <div class="card-body d-flex flex-column">
+
+                    <h5 class="card-title">
+
+                        <%= booking.property?.title || "Property" %>
+
+                    </h5>
+
+                    <p class="text-muted mb-3">
+
+                        <i class="fa-solid fa-location-dot text-danger"></i>
+
+                        <%= booking.property?.city %>,
+
+                        <%= booking.property?.state %>
+
+                    </p>
+
+                    <hr>
+
+                    <div class="row">
+
+                        <div class="col-6 mb-2">
+
+                            <strong>Check In</strong>
+
+                            <br>
+
+                            <%= new Date(booking.checkIn).toLocaleDateString() %>
+
+                        </div>
+
+                        <div class="col-6 mb-2">
+
+                            <strong>Check Out</strong>
+
+                            <br>
+
+                            <%= new Date(booking.checkOut).toLocaleDateString() %>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row mt-2">
+
+                        <div class="col-6">
+
+                            <strong>Guests</strong>
+
+                            <br>
+
+                            <%= booking.guests %>
+
+                        </div>
+
+                        <div class="col-6">
+
+                            <strong>Total Price</strong>
+
+                            <br>
+
+                            ₹<%= booking.totalPrice.toLocaleString("en-IN") %>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <p class="mb-4">
+
+                        <strong>Status :</strong>
+
+                        <% if(booking.status==="pending"){ %>
+
+                            <span class="badge bg-warning text-dark">
+
+                                Pending
+
+                            </span>
 
                         <% } %>
 
-                        <div class="card-body">
+                        <% if(booking.status==="approved"){ %>
 
-                            <h5 class="card-title">
-                                <%= booking.property?.title || "Property" %>
-                            </h5>
+                            <span class="badge bg-success">
 
-                            <p class="text-muted">
-                                <%= booking.property?.city %>,
-                                <%= booking.property?.state %>
-                            </p>
+                                Approved
 
-                            <hr>
+                            </span>
 
-                            <p>
-                                <strong>Check In:</strong>
-                                <%= new Date(booking.checkIn).toLocaleDateString() %>
-                            </p>
+                        <% } %>
 
-                            <p>
-                                <strong>Check Out:</strong>
-                                <%= new Date(booking.checkOut).toLocaleDateString() %>
-                            </p>
+                        <% if(booking.status==="rejected"){ %>
 
-                            <p>
-                                <strong>Guests:</strong>
-                                <%= booking.guests %>
-                            </p>
+                            <span class="badge bg-danger">
 
-                            <p>
-                                <strong>Total Price:</strong>
-                                ₹<%= booking.totalPrice.toLocaleString("en-IN") %>
-                            </p>
+                                Rejected
 
-                            <p>
+                            </span>
 
-                                <strong>Status:</strong>
+                        <% } %>
 
-                                <% if(booking.status === "pending"){ %>
+                        <% if(booking.status==="cancelled"){ %>
 
-                                    <span class="badge bg-warning">
-                                        Pending
-                                    </span>
+                            <span class="badge bg-secondary">
 
-                                <% } %>
+                                Cancelled
 
-                                <% if(booking.status === "approved"){ %>
+                            </span>
 
-                                    <span class="badge bg-success">
-                                        Approved
-                                    </span>
+                        <% } %>
 
-                                <% } %>
+                    </p>
 
-                                <% if(booking.status === "rejected"){ %>
+                    <div class="mt-auto">
 
-                                    <span class="badge bg-danger">
-                                        Rejected
-                                    </span>
+                        <div class="d-grid gap-2">
 
-                                <% } %>
+                            <a
+                                href="/listings/<%= booking.property._id %>"
+                                class="btn btn-outline-dark">
 
-                                <% if(booking.status === "cancelled"){ %>
+                                <i class="fa-solid fa-eye"></i>
 
-                                    <span class="badge bg-secondary">
-                                        Cancelled
-                                    </span>
+                                View Property
 
-                                <% } %>
+                            </a>
 
-                            </p>
+                            <% if(
+                                booking.status==="pending" ||
+                                booking.status==="approved"
+                            ){ %>
+
+                            <form
+                                action="/bookings/<%= booking._id %>/cancel?_method=PATCH"
+                                method="POST">
+
+                                <button
+                                    class="btn btn-danger w-100"
+                                    onclick="return confirm('Are you sure you want to cancel this booking?')">
+
+                                    <i class="fa-solid fa-xmark"></i>
+
+                                    Cancel Booking
+
+                                </button>
+
+                            </form>
+
+                            <% } %>
+
+                            <% if(booking.status==="cancelled"){ %>
+
+                                <button
+                                    class="btn btn-secondary"
+                                    disabled>
+
+                                    <i class="fa-solid fa-ban"></i>
+
+                                    Booking Cancelled
+
+                                </button>
+
+                            <% } %>
+
+                            <% if(booking.status==="rejected"){ %>
+
+                                <button
+                                    class="btn btn-outline-danger"
+                                    disabled>
+
+                                    <i class="fa-solid fa-circle-xmark"></i>
+
+                                    Booking Rejected
+
+                                </button>
+
+                            <% } %>
 
                         </div>
 
@@ -99,7 +224,14 @@
 
                 </div>
 
-            <% }) %>
+            </div>
+
         </div>
+
+        <% }) %>
+
+    </div>
+
     <% } %>
+
 </div>

@@ -1,7 +1,11 @@
 const Booking = require("../models/bookings");
 const Listing = require("../models/listing");
 const sendEmail = require("../utils/email");
+const sendBookingCancelledGuest =
+require("../utils/sendBookingCancelledGuest");
 
+const sendBookingCancelledHost =
+require("../utils/sendBookingCancelledHost");
 function getDatesBetween(startDate, endDate) {
     const dates = [];
     const current = new Date(startDate);
@@ -196,42 +200,121 @@ module.exports.hostBookings = async (req, res) => {
 };
 
 // Cancel Booking
-module.exports.cancelBooking = async (req, res) => {
+module.exports.cancelBooking = async (req,res)=>{
 
-    const booking =
-        await Booking.findById(req.params.id);
+    try{
 
-    if (!booking) {
-        req.flash(
-            "error",
-            "Booking not found"
+        const booking = await Booking.findById(req.params.id)
+        .populate("guest")
+        .populate("host")
+        .populate("property");
+
+        if(!booking){
+
+            req.flash(
+                "error",
+                "Booking not found."
+            );
+
+            return res.redirect("/bookings/my");
+
+        }
+
+        if(
+            booking.guest._id.toString() !==
+            req.user._id.toString()
+        ){
+
+            req.flash(
+                "error",
+                "Unauthorized action."
+            );
+
+            return res.redirect("/bookings/my");
+
+        }
+
+        if(
+            booking.status==="cancelled" ||
+            booking.status==="rejected"
+        ){
+
+            req.flash(
+                "error",
+                "This booking cannot be cancelled."
+            );
+
+            return res.redirect("/bookings/my");
+
+        }
+
+        // -----------------------------------
+        // Free unavailable dates
+        // -----------------------------------
+
+        if(booking.status==="approved"){
+
+            const listing = booking.property;
+
+            listing.unavailableDates =
+            listing.unavailableDates.filter(date=>{
+
+                return !(
+                    date>=booking.checkIn &&
+                    date<booking.checkOut
+                );
+
+            });
+
+            await listing.save();
+
+        }
+
+        // -----------------------------------
+        // Cancel booking
+        // -----------------------------------
+
+        booking.status="cancelled";
+
+        await booking.save();
+
+        // -----------------------------------
+        // Emails
+        // -----------------------------------
+
+        await sendBookingCancelledGuest(
+            booking
         );
 
-        return res.redirect("/bookings/my");
-    }
-
-    if (
-        booking.guest.toString() !==
-        req.user._id.toString()
-    ) {
-        req.flash(
-            "error",
-            "Unauthorized"
+        await sendBookingCancelledHost(
+            booking
         );
 
-        return res.redirect("/bookings/my");
+        req.flash(
+
+            "success",
+
+            "Booking cancelled successfully."
+
+        );
+
+        res.redirect("/bookings/my");
+
     }
 
-    booking.status = "cancelled";
+    catch(err){
 
-    await booking.save();
+        console.log(err);
 
-    req.flash(
-        "success",
-        "Booking cancelled"
-    );
+        req.flash(
+            "error",
+            "Unable to cancel booking."
+        );
 
-    res.redirect("/bookings/my");
+        res.redirect("/bookings/my");
+
+    }
+
 };
 
 module.exports.approveBooking = async (req, res) => {

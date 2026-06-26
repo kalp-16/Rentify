@@ -92,7 +92,7 @@ app.get("/test-email", async (req,res)=>{
         res.send("Email Sent");
 
     }catch(err){
-
+        
         console.log(err);
 
         res.send("Email Failed");

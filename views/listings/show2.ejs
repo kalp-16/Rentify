@@ -18,24 +18,25 @@
         <% } %>
     </div>
     <hr>
-    <!-- AIRBNB GALLERY -->
-    <div class="airbnb-gallery mb-5">
-        <div class="gallery-main">
-            <img
-                src="<%= listing.image?.[0]?.url %>"
-                alt="Property"
-                loading="eager">
+
+    <!-- PROPERTY GALLERY -->
+    <div class="property-gallery mb-5">
+        <div class="gallery-hero position-relative">
+            <img id="mainImage" src="<%= listing.image?.[0]?.url %>" class="img-fluid rounded-4 shadow" alt="<%= listing.title %>">
+            <% if(listing.image.length>1){ %>
+            <button class="btn btn-dark gallery-btn" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                <i class="fa-solid fa-images"></i>
+                View All Photos
+            </button>
+            <% } %>
         </div>
-        <div class="gallery-grid">
-            <% listing.image.slice(1,5).forEach((img, index) => { %>
-                <div class="gallery-item gallery-item-<%= index + 1 %>">
-                    <img
-                        src="<%= img.url %>"
-                        alt="Property"
-                        loading="lazy">
-                </div>
+        <% if(listing.image.length>1){ %>
+        <div class="thumbnail-row mt-3">
+            <% listing.image.forEach((img,index)=>{ %>
+            <img src="<%= img.url %>" class="gallery-thumb <%= index===0?'active-thumb':'' %>" onclick="changeMainImage(this)" data-index="<%= index %>">
             <% }) %>
         </div>
+        <% } %>
     </div>
 
     <div class="row g-4 show-content">
@@ -256,6 +257,77 @@
     </div>
     </div>
 </div>
+<div
+class="modal fade"
+id="galleryModal"
+tabindex="-1">
+
+<div class="modal-dialog modal-xl modal-dialog-centered">
+
+<div class="modal-content bg-dark">
+
+<div class="modal-header border-0">
+
+<h5 class="text-white">
+
+Property Gallery
+
+</h5>
+
+<button
+class="btn-close btn-close-white"
+data-bs-dismiss="modal">
+
+</button>
+
+</div>
+
+<div class="modal-body">
+
+<div
+id="galleryCarousel"
+class="carousel slide">
+
+<div class="carousel-inner">
+
+<% listing.image.forEach((img,index)=>{ %>
+
+<div
+class="carousel-item <%= index===0?'active':'' %>">
+
+<img
+src="<%= img.url %>"
+class="d-block w-100 gallery-full-image">
+
+</div>
+
+<% }) %>
+
+</div>
+
+<button
+class="carousel-control-prev"
+data-bs-target="#galleryCarousel"
+data-bs-slide="prev">
+
+<span class="carousel-control-prev-icon"></span>
+
+</button>
+
+<button
+class="carousel-control-next"
+data-bs-target="#galleryCarousel"
+data-bs-slide="next">
+
+<span class="carousel-control-next-icon"></span>
+
+</button>
+
+</div>
+
+</div>
+</div>
+</div>
 <script>
 
 const leafletCss = document.createElement('link');
@@ -393,5 +465,15 @@ checkOut.addEventListener(
 'change',
 updatePrice
 );
+function changeMainImage(image){
 
+document.getElementById("mainImage").src=image.src;
+
+document
+.querySelectorAll(".gallery-thumb")
+.forEach(img=>img.classList.remove("active-thumb"));
+
+image.classList.add("active-thumb");
+
+}
 </script>

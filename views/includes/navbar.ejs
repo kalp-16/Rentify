@@ -11,16 +11,16 @@
     </button>
     <div class="navbar-nav ms-auto align-items-center">
       <a class="nav-link me-3" href="/listings/new">Become a Host</a>
-      <% if(currUser){ %>
+      <% if(typeof currUser !== "undefined" && currUser){ %>
       <div class="dropdown">
         <button class="btn profile-menu-btn" data-bs-toggle="dropdown">
           <% if(
               currUser.profileImage &&
               currUser.profileImage.url
           ){ %>
-          <img src="<%= currUser.profileImage.url %>" class="navbar-profile-pic">
+          <img src="<%= currUser.profileImage.url %>" class="navbar-profile-pic" alt="Profile">
           <% } else { %>
-          <i class="fa-solid fa-user"></i>
+          <img src="/images/default-avatar.png" class="navbar-profile-pic" alt="Default Profile">
           <% } %>
         </button>
         <ul class="dropdown-menu dropdown-menu-end shadow">

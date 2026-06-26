@@ -1,4 +1,4 @@
-<% layout("/layouts/boilerplate") %>
+<!--`<% layout("/layouts/boilerplate") %>
 <div class="row-3">
     <h1 class="col-6 offset-3">SignUp on Rentify</h1><br>
     <div class="col-6 offset-3">
@@ -18,4 +18,247 @@
             <button class="btn btn-success">SignUp</button>
         </form>
     </div>
+</div>-->
+<% layout("/layouts/boilerplate") %>
+
+<div class="container auth-page">
+    <div class="row justify-content-center">
+        <div class="col-lg-12 col-md-9">
+            <div class="auth-card shadow">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">Create your Rentify Account</h2>
+                    <p class="text-muted">
+                        Join Rentify and start booking amazing stays.
+                    </p>
+                </div>
+                <form
+                    action="/signup"
+                    method="POST"
+                    enctype="multipart/form-data"
+                    class="needs-validation"
+                    novalidate>
+                    <!-- Full Name -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="fullName"
+                            required>
+
+                        <div class="invalid-feedback">
+                            Please enter your full name.
+                        </div>
+
+                    </div>
+                    <!-- Username -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Username
+                        </label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="username"
+                            required>
+                        <div class="invalid-feedback">
+                            Please choose a username.
+                        </div>
+                    </div>
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Email Address
+                        </label>
+                        <input
+                            type="email"
+                            class="form-control"
+                            name="email"
+                            placeholder="Enter your email"
+                            required>
+                        <div class="invalid-feedback">
+                            Enter a valid email address.
+                        </div>
+                    </div>
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" minlength="8" required>
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">Show</button>
+                        </div>
+                        <small id="passwordStrength" class="text-muted">Minimum 8 characters</small>
+                    </div>
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirm">Show</button>
+                        </div>
+                        <small id="matchText"></small>
+                    </div>
+                    <!-- Profile Picture -->
+                    <div class="mb-4">
+                        <label class="form-label">Profile Picture (Optional)</label>
+                        <input type="file" class="form-control" name="profileImage" accept=".jpg,.jpeg,.png,.webp">
+                    </div>
+                    <!-- Terms -->
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" required>
+                        <label class="form-check-label">I agree to the Terms & Conditions</label>
+                    </div>
+                    <button class="btn btn-danger w-100 auth-btn">Create Account</button>
+                </form>
+                <hr>
+                <p class="text-center mb-0">
+                    Already have an account?
+                    <a href="/login">Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
+<script>
+
+const password = document.getElementById("password");
+const confirmPassword = document.getElementById("confirmPassword");
+
+const matchText = document.getElementById("matchText");
+const passwordStrength = document.getElementById("passwordStrength");
+
+
+// ----------------------
+// Show / Hide Password
+// ----------------------
+
+document.getElementById("togglePassword").onclick = () => {
+
+    password.type =
+        password.type === "password"
+        ? "text"
+        : "password";
+
+};
+
+document.getElementById("toggleConfirm").onclick = () => {
+
+    confirmPassword.type =
+        confirmPassword.type === "password"
+        ? "text"
+        : "password";
+
+};
+
+
+// ----------------------
+// Password Strength
+// ----------------------
+
+password.addEventListener("keyup",()=>{
+
+    let score = 0;
+
+    if(password.value.length >= 8) score++;
+
+    if(/[A-Z]/.test(password.value)) score++;
+
+    if(/[0-9]/.test(password.value)) score++;
+
+    if(/[^A-Za-z0-9]/.test(password.value)) score++;
+
+    if(score==1){
+
+        passwordStrength.innerHTML="Weak Password";
+        passwordStrength.className="text-danger";
+
+    }
+
+    else if(score==2){
+
+        passwordStrength.innerHTML="Fair Password";
+        passwordStrength.className="text-warning";
+
+    }
+
+    else if(score==3){
+
+        passwordStrength.innerHTML="Good Password";
+        passwordStrength.className="text-primary";
+
+    }
+
+    else if(score==4){
+
+        passwordStrength.innerHTML="Strong Password";
+        passwordStrength.className="text-success";
+
+    }
+
+});
+
+
+// ----------------------
+// Password Match
+// ----------------------
+
+confirmPassword.addEventListener("keyup",()=>{
+
+    if(confirmPassword.value==""){
+
+        matchText.innerHTML="";
+        return;
+
+    }
+
+    if(password.value===confirmPassword.value){
+
+        matchText.innerHTML="✔ Passwords match";
+        matchText.className="text-success";
+
+    }
+
+    else{
+
+        matchText.innerHTML="✖ Passwords do not match";
+        matchText.className="text-danger";
+
+    }
+
+});
+
+
+// ----------------------
+// Bootstrap Validation
+// ----------------------
+
+(()=>{
+'use strict'
+
+const forms = document.querySelectorAll('.needs-validation')
+
+Array.from(forms).forEach(form=>{
+
+form.addEventListener('submit',event=>{
+
+if(!form.checkValidity() ||
+password.value!==confirmPassword.value){
+
+event.preventDefault()
+event.stopPropagation()
+
+}
+
+form.classList.add('was-validated')
+
+},false)
+
+})
+
+})()
+
+</script>

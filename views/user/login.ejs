@@ -1,4 +1,4 @@
-<% layout("/layouts/boilerplate") %>
+<!--<% layout("/layouts/boilerplate") %>
 <div class="row-3">
     <h1 class="col-6 offset-3">Login on Rentify</h1><br>
     <div class="col-6 offset-3">
@@ -14,4 +14,104 @@
             <button class="btn btn-success">Login</button>
         </form>
     </div>
+</div>-->
+<% layout("/layouts/boilerplate") %>
+
+<div class="container auth-page">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <div class="auth-card">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">
+                        Welcome Back
+                    </h2>
+                    <p class="text-muted">
+                        Login to continue your Rentify journey.
+                    </p>
+                </div>
+                <form action="/login" method="POST" class="needs-validation" novalidate>
+                    <!-- Username / Email -->
+                    <div class="mb-3">
+                        <label class="form-label">Email or Username</label>
+                        <input type="text" class="form-control" name="username" placeholder="Enter your email or username" required>
+                        <div class="invalid-feedback">
+                            Please enter your email or username.
+                        </div>
+                    </div>
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">Show</button>
+                        </div>
+                    </div>
+                    <!-- Remember + Forgot -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Remember Me</label>
+                        </div>
+                        <a href="/forgot-password" class="text-decoration-none">Forgot Password?</a>
+                    </div>
+                    <!-- Login Button -->
+                    <button class="btn auth-btn btn-dark w-100" style="background-color: #fa2727; ">
+                        Login
+                    </button>
+                </form>
+                <hr>
+                <div class="text-center">
+                    Don't have an account?
+                    <a href="/signup">Create Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+
+document
+.getElementById("togglePassword")
+.onclick=function(){
+
+const password=
+document.getElementById("password");
+
+password.type=
+password.type==="password"
+?"text":"password";
+
+this.innerHTML=
+password.type==="password"
+?"Show"
+:"Hide";
+
+};
+
+
+(()=>{
+'use strict'
+
+const forms=
+document.querySelectorAll('.needs-validation')
+
+Array.from(forms).forEach(form=>{
+
+form.addEventListener('submit',event=>{
+
+if(!form.checkValidity()){
+
+event.preventDefault()
+
+event.stopPropagation()
+
+}
+
+form.classList.add('was-validated')
+
+},false)
+
+})
+})();
+</script>
