@@ -303,7 +303,7 @@ module.exports.cancelBooking = async (req,res)=>{
     }
 
     catch(err){
-
+        
         console.log(err);
 
         req.flash(

@@ -14,6 +14,10 @@ const sendEmail = async (
     html
 ) => {
 
+    if (!to) {
+        throw new Error("Missing email recipient.");
+    }
+
     await transporter.sendMail({
         from: `"Rentify Notifications" <${process.env.EMAIL_USER}>`,
         to,

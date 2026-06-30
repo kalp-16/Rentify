@@ -76,7 +76,7 @@ const sendBookingCancelledHost = async (booking) => {
 
     await sendEmail(
 
-        booking.property.owner.email,
+        booking.host.email,
 
         "Guest Cancelled Booking - Rentify",
 
