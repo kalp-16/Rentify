@@ -6,7 +6,7 @@ const sendVerificationEmail = async (
 ) => {
 
     const verifyUrl =
-        `http://localhost:8080/verify/${token}`;
+        `${process.env.BASE_URL}/reset-password/${token}`;
 
     const html = `
     <div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;background:#ffffff;padding:40px;border-radius:12px;border:1px solid #eeeeee;">
