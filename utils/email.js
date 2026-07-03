@@ -1,34 +1,38 @@
-const brevo = require("@getbrevo/brevo");
-
-const apiInstance = new brevo.TransactionalEmailsApi();
-
-apiInstance.setApiKey(
-    brevo.TransactionalEmailsApiApiKeys.apiKey,
-    process.env.BREVO_API_KEY
-);
+const axios = require("axios");
 
 const sendEmail = async (to, subject, html) => {
+
     if (!to) {
         throw new Error("Missing email recipient.");
     }
+
     try {
-        await apiInstance.sendTransacEmail({
-            sender: {
-                email: process.env.BREVO_SENDER,
-                name: "Rentify"
+
+        await axios.post(
+            "https://api.brevo.com/v3/smtp/email",
+            {
+                sender: {
+                    name: "Rentify",
+                    email: process.env.BREVO_SENDER
+                },
+                to: [
+                    {
+                        email: to
+                    }
+                ],
+                subject,
+                htmlContent: html
             },
-            to: [
-                {
-                    email: to
+            {
+                headers: {
+                    "api-key": process.env.BREVO_API_KEY,
+                    "Content-Type": "application/json"
                 }
-            ],
-            subject,
-            htmlContent: html
-        });
-        console.log("Email sent successfully.");
+            }
+        );
+        console.log("Email sent successfully");
     } catch (err) {
-        console.error("Brevo API Error:");
-        console.error(err.response?.body || err.message);
+        console.error(err.response?.data || err.message);
         throw err;
     }
 };
