@@ -1,26 +1,35 @@
-const nodemailer = require("nodemailer");
+const brevo = require("@getbrevo/brevo");
 
-const transporter = nodemailer.createTransport({
-    host: "smtp-relay.brevo.com",
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.BREVO_USER,
-        pass: process.env.BREVO_PASS,
-    },
-});
+const apiInstance = new brevo.TransactionalEmailsApi();
+
+apiInstance.setApiKey(
+    brevo.TransactionalEmailsApiApiKeys.apiKey,
+    process.env.BREVO_API_KEY
+);
 
 const sendEmail = async (to, subject, html) => {
     if (!to) {
         throw new Error("Missing email recipient.");
     }
-
-    await transporter.sendMail({
-        from: `"Rentify" <${process.env.BREVO_SENDER}>`,
-        to,
-        subject,
-        html,
-    });
+    try {
+        await apiInstance.sendTransacEmail({
+            sender: {
+                email: process.env.BREVO_SENDER,
+                name: "Rentify"
+            },
+            to: [
+                {
+                    email: to
+                }
+            ],
+            subject,
+            htmlContent: html
+        });
+        console.log("Email sent successfully.");
+    } catch (err) {
+        console.error("Brevo API Error:");
+        console.error(err.response?.body || err.message);
+        throw err;
+    }
 };
-
 module.exports = sendEmail;
